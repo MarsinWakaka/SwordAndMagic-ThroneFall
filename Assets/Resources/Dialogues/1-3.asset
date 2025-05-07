@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1607014b4c74e07855dc6372b18119c, type: 3}
+  m_Name: 1-3
+  m_EditorClassIdentifier: 
+  nodes:
+  - speaker: 
+    text: "\uFF08\u5DE8\u578B\u7D2B\u8272\u6C34\u6676\u60AC\u6D6E\u7A7A\u4E2D\uFF0C\u54E5\u5E03\u6797\u8428\u6EE1\u6B63\u4E3E\u884C\u732E\u796D\u4EEA\u5F0F\uFF09"
+    expression: 0
+    voiceClip: {fileID: 0}
+    operation:
+    - operationType: 2
+      strValue: "\u9634\u6697\u6D1E\u7A74_0"
+      floatValue: 0
+      intValue: 0
+  - speaker: "\u54E5\u5E03\u6797\u8428\u6EE1"
+    text: "\uFF08\u766B\u72C2\u6325\u821E\u6CD5\u6756\uFF09\u82CF\u9192\u5427\uFF01\u6676\u6838\u4E2D\u7684\u707E\u5384\u4E4B\u9F99\u2014\u2014\uFF08\u6C34\u6676\u88C2\u5F00\u9F99\u5F62\u9ED1\u5F71\uFF09"
+    expression: 0
+    voiceClip: {fileID: 0}
+    operation: []
+  - speaker: Ais
+    text: "\uFF08\u51B2\u523A\u5288\u780D\u6C34\u6676\u57FA\u5EA7\uFF09\u4F11\u60F3\uFF01"
+    expression: 0
+    voiceClip: {fileID: 0}
+    operation:
+    - operationType: 0
+      strValue: 
+      floatValue: 0
+      intValue: 1
+  - speaker: 
+    text: "\uFF08\u4F9D\u857E\u5A1C\u5728\u6218\u6597\u4E2D\uFF0C\u8D81\u673A\u62A2\u8D70\u4E86\u9AA8\u7B1B\uFF0C\u53CD\u5411\u64CD\u63A7\u54E5\u5E03\u6797\uFF0C\u5F15\u53D1\u5B83\u4EEC\u81EA\u76F8\u6B8B\u6740\uFF09"
+    expression: 0
+    voiceClip: {fileID: 0}
+    operation:
+    - operationType: 1
+      strValue: 
+      floatValue: 0
+      intValue: 0
+    - operationType: 1
+      strValue: 
+      floatValue: 0
+      intValue: 1
+  - speaker: Ais
+    text: "\u51C6\u5907\u6218\u6597\uFF01"
+    expression: 0
+    voiceClip: {fileID: 0}
+    operation:
+    - operationType: 0
+      strValue: 
+      floatValue: 0
+      intValue: 0

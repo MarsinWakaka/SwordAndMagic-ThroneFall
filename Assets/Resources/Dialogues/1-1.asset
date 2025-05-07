@@ -1,0 +1,91 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1607014b4c74e07855dc6372b18119c, type: 3}
+  m_Name: 1-1
+  m_EditorClassIdentifier: 
+  nodes:
+  - speaker: 
+    text: "\uFF08\u6668\u96FE\u4E2D\uFF0C\u94F6\u7532\u6218\u58EBAis\u6B63\u5728\u64E6\u62ED\u957F\u5251\uFF0C\u5B66\u8005Elaina\u501A\u7740\u77F3\u5899\u8BB0\u5F55\u9B54\u6CD5\u9635\u6570\u636E\uFF09"
+    expression: 0
+    voiceClip: {fileID: 0}
+    operation:
+    - operationType: 2
+      strValue: "\u57CE\u5821_\u95E8\u524D_0"
+      floatValue: 0
+      intValue: 0
+  - speaker: Elaina
+    text: "\uFF08\u7528\u7FBD\u6BDB\u7B14\u8F7B\u70B9\u7F8A\u76AE\u7EB8\uFF09\u7B2C\u4E09\u5341\u4E03\u6B21\u89C2\u6D4B...\u4F60\u7684\u5251\u5203\u9707\u98A4\u9891\u7387\u4F9D\u7136\u65E0\u6CD5\u4E0E\u9632\u5FA1\u6CD5\u9635\u540C\u6B65\u5462\uFF0C\u5251\u59EC\u5927\u4EBA\u3002"
+    expression: 0
+    voiceClip: {fileID: 0}
+    operation:
+    - operationType: 0
+      strValue: 
+      floatValue: 0
+      intValue: 0
+  - speaker: Ais
+    text: "Ais\uFF1A\uFF08\u5634\u89D2\u5FAE\u626C\uFF09\u4F46\u80FD\u7CBE\u51C6\u5207\u5F00\u4E09\u4E2A\u54E5\u5E03\u6797\u7684\u5589\u5499\uFF0C\u8FD9\u5C31\u591F\u4E86\u3002\uFF08\u7A81\u7136\u6309\u4F4F\u5251\u67C4\uFF09\u542C\uFF01"
+    expression: 0
+    voiceClip: {fileID: 0}
+    operation:
+    - operationType: 0
+      strValue: 
+      floatValue: 0
+      intValue: 1
+  - speaker: Elaina
+    text: "\r\uFF08\u7FFB\u52A8\u9B54\u6CD5\u4E66\u53EC\u5524\u51FA\u661F\u8C61\u6295\u5F71\uFF09\u897F\u5317\u65B9\u5411\u4E09\u91CC...\u662F\u8FB9\u5883\u6751\u843D\u7684\u5B88\u536B\u949F\u58F0\uFF01\uFF1F"
+    expression: 0
+    voiceClip: {fileID: 0}
+    operation: []
+  - speaker: 
+    text: "\u5E72\u8349\u5806\u5192\u8D77\u9ED1\u70DF\uFF0C\u4E94\u4E2A\u54E5\u5E03\u6797\u6B63\u7528\u94C1\u94A9\u7FFB\u5012\u7CAE\u4ED3\uFF09"
+    expression: 0
+    voiceClip: {fileID: 0}
+    operation:
+    - operationType: 1
+      strValue: 
+      floatValue: 0
+      intValue: 0
+    - operationType: 1
+      strValue: 
+      floatValue: 0
+      intValue: 1
+    - operationType: 2
+      strValue: "\u6751\u5E84_0"
+      floatValue: 0
+      intValue: 0
+  - speaker: Goblin
+    text: "\uFF08\u7528\u8150\u8089\u5582\u98DF\u5A74\u513F\uFF09\u54C7\u54C8\u54C8\uFF01\u5C0F\u796D\u54C1\u8981\u65B0\u9C9C\u7684\uFF01"
+    expression: 0
+    voiceClip: {fileID: 0}
+    operation:
+    - operationType: 0
+      strValue: 
+      floatValue: 0
+      intValue: 1
+  - speaker: Ais
+    text: "\uFF08\u77AC\u606F\u62D4\u5251\u65A9\u65AD\u94C1\u94A9\uFF09\u6562\u78B0\u738B\u56FD\u5B50\u6C11\u2014\u2014"
+    expression: 0
+    voiceClip: {fileID: 0}
+    operation:
+    - operationType: 0
+      strValue: 
+      floatValue: 0
+      intValue: 0
+  - speaker: 
+    text: "\u564C\u564C\u564C\u2014\u2014"
+    expression: 0
+    voiceClip: {fileID: 0}
+    operation:
+    - operationType: 1
+      strValue: 
+      floatValue: 0
+      intValue: 1

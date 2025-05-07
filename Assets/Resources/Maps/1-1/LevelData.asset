@@ -1,0 +1,93 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0bd065d6c7201a4bb8f602f3396a329, type: 3}
+  m_Name: LevelData
+  m_EditorClassIdentifier: 
+  mapID: 1-1
+  mapName: "\u5E8F\u7AE0"
+  hasDialogue: 1
+  dialogueId: 1-1
+  grids:
+  - cellID: 1
+    gridCoord: {x: 0, y: 0}
+    height: 0
+  - cellID: 1
+    gridCoord: {x: 0, y: 1}
+    height: 1
+  - cellID: 1
+    gridCoord: {x: 0, y: 2}
+    height: 2
+  - cellID: 1
+    gridCoord: {x: 0, y: 3}
+    height: 0
+  - cellID: 1
+    gridCoord: {x: 0, y: 4}
+    height: 0
+  - cellID: 1
+    gridCoord: {x: 0, y: 5}
+    height: 0
+  - cellID: 1
+    gridCoord: {x: 1, y: 0}
+    height: 0
+  - cellID: 1
+    gridCoord: {x: 1, y: 1}
+    height: 0
+  - cellID: 1
+    gridCoord: {x: 1, y: 2}
+    height: 0
+  - cellID: 1
+    gridCoord: {x: 1, y: 3}
+    height: 0
+  - cellID: 1
+    gridCoord: {x: 1, y: 4}
+    height: 0
+  - cellID: 1
+    gridCoord: {x: 1, y: 5}
+    height: 0
+  - cellID: 1
+    gridCoord: {x: 2, y: 0}
+    height: 0
+  - cellID: 1
+    gridCoord: {x: 2, y: 1}
+    height: 0
+  - cellID: 1
+    gridCoord: {x: 2, y: 2}
+    height: 0
+  - cellID: 1
+    gridCoord: {x: 2, y: 3}
+    height: 0
+  - cellID: 1
+    gridCoord: {x: 2, y: 4}
+    height: 0
+  - cellID: 1
+    gridCoord: {x: 2, y: 5}
+    height: 0
+  deployableGrids:
+  - {x: 0, y: 0}
+  - {x: 1, y: 0}
+  - {x: 2, y: 0}
+  maxDeployCount: 2
+  allowPlayerCharacters: 1
+  presetCharacters: []
+  characterSpawnData:
+  - faction: 0
+    spawnQueue: []
+  - faction: 1
+    spawnQueue:
+    - characterData: {fileID: 11400000, guid: 1e1dd29e459a76f438f3d963becdeb6f, type: 2}
+      gridCoord: {x: 0, y: 4}
+      direction: 0
+    - characterData: {fileID: 11400000, guid: 1e1dd29e459a76f438f3d963becdeb6f, type: 2}
+      gridCoord: {x: 1, y: 5}
+      direction: 0
+  tasks: []
+  reward: 150

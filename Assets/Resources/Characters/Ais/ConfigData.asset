@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b5f0b65ccb47d1ae370695aa698683, type: 3}
+  m_Name: ConfigData
+  m_EditorClassIdentifier: 
+  entityID: Ais
+  unitName: "\u827E\u4E1D"
+  icon: {fileID: 1385562060, guid: be7c19259ea5b744cace1226680c8879, type: 3}
+  entityType: 1
+  blockMovement: 1
+  description: 
+  upgradeData:
+  - maxHp: 5
+    maxMoveRange: 4
+    initSkillPoint: 2
+  - maxHp: 5
+    maxMoveRange: 4
+    initSkillPoint: 4
+  - maxHp: 6
+    maxMoveRange: 5
+    initSkillPoint: 4
+  - maxHp: 9
+    maxMoveRange: 6
+    initSkillPoint: 4
