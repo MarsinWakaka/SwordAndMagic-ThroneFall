@@ -39,7 +39,6 @@ namespace Player
             ResourceChangedCallback -= action;
         }
 
-        
         /// <summary>
         /// 从存档数据中初始化玩家数据
         /// </summary>

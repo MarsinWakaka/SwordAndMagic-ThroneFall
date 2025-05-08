@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace GameLogic.Unit
 {
@@ -15,9 +14,12 @@ namespace GameLogic.Unit
         public int level;
     }
     
+    /// <summary>
+    /// [Purpose]
+    /// 用于玩家角色数据持久化的类()
+    /// </summary>
     [Serializable]
-    [CreateAssetMenu(fileName = "new PresentData", menuName = "Character/PresentData", order = 1)]
-    public class CharacterData : ScriptableObject
+    public class CharacterData
     {
         // 角色名称
         public string characterID;

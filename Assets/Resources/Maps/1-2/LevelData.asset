@@ -81,13 +81,13 @@ MonoBehaviour:
   characterSpawnData:
   - faction: 1
     spawnQueue:
-    - characterData: {fileID: 11400000, guid: 1e1dd29e459a76f438f3d963becdeb6f, type: 2}
+    - characterPresentData: {fileID: 11400000, guid: 1e1dd29e459a76f438f3d963becdeb6f, type: 2}
       gridCoord: {x: 0, y: 5}
       direction: 0
-    - characterData: {fileID: 11400000, guid: 1e1dd29e459a76f438f3d963becdeb6f, type: 2}
+    - characterPresentData: {fileID: 11400000, guid: 1e1dd29e459a76f438f3d963becdeb6f, type: 2}
       gridCoord: {x: 1, y: 4}
       direction: 0
-    - characterData: {fileID: 11400000, guid: 1e1dd29e459a76f438f3d963becdeb6f, type: 2}
+    - characterPresentData: {fileID: 11400000, guid: 1e1dd29e459a76f438f3d963becdeb6f, type: 2}
       gridCoord: {x: 2, y: 5}
       direction: 0
   tasks: []

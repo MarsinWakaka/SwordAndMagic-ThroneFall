@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Events.Battle;
 using GameLogic.Grid;
 using GameLogic.Grid.Area;
+using GameLogic.LevelSystem;
 using GameLogic.Map;
 using GameLogic.Unit;
 using GameLogic.Unit.Controller;
@@ -117,7 +118,7 @@ namespace GameLogic.Battle
                 EventBus.Channel(Channel.Gameplay).Publish(new DeployCharacterCountChangeEvent(_curDeployCount));
                 EventBus.Channel(Channel.Gameplay).Publish(new SpawnCharacterEvent(belongFaction, new []
                 {
-                    new BaseCharacterSpawnData(
+                    new CharacterSpawnData(
                         _selectedCharacterData.Data,
                         grid.GetGrid2DCoord(),
                         default)

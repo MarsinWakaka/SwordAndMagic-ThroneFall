@@ -9,14 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 366006c3ef3a43b5aac3bb89d3ee0a05, type: 3}
+  m_Script: {fileID: 11500000, guid: 6eac6e3469234147b23cf81b0b8b9b8d, type: 3}
   m_Name: Elaina_Lv.1
   m_EditorClassIdentifier: Assembly-CSharp:Player:CharacterData
-  characterID: Elaina
-  level: 1
-  activeSkillsData:
-  - skillID: FireVolt
+  characterData:
+    characterID: Elaina
     level: 1
-  passiveSkillsData:
-  - skillID: FoxPlan
-    level: 1
+    activeSkillsData:
+    - skillID: FireVolt
+      level: 1
+    passiveSkillsData:
+    - skillID: FoxPlan
+      level: 1

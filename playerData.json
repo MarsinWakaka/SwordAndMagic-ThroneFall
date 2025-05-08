@@ -1,1 +1,1 @@
-{"resources":1100,"ownedCharacters":[{"instanceID":-30548},{"instanceID":-30550}],"levelPassedData":[{"levelID":"1-1","starsEarned":3},{"levelID":"1-2","starsEarned":3}]}
+{"resources":400,"ownedCharacters":[{"characterID":"Elaina","level":2,"activeSkillsData":[{"skillID":"FireVolt","level":1}],"passiveSkillsData":[{"skillID":"FoxPlan","level":1}]},{"characterID":"Ais","level":1,"activeSkillsData":[{"skillID":"DeltaSlash","level":1}],"passiveSkillsData":[]}],"levelPassedData":[{"levelID":"1-1","starsEarned":3},{"levelID":"1-2","starsEarned":1}]}

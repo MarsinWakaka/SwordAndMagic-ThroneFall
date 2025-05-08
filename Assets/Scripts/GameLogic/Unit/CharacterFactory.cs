@@ -1,5 +1,6 @@
 using System;
 using Events.Battle;
+using GameLogic.LevelSystem;
 using GameLogic.Map;
 using GameLogic.Unit.BattleRuntimeData;
 using GameLogic.Unit.Controller;
@@ -40,9 +41,9 @@ namespace GameLogic.Unit
             }
         }
 
-        private void CreateUnit(Faction faction, BaseCharacterSpawnData data)
+        private void CreateUnit(Faction faction, CharacterSpawnData data)
         {
-            var characterID = data.characterData.characterID;
+            var characterID = data.CharacterData.characterID;
             var fullPath = GetPrefabPath(characterID);
             var characterPrefab = Resources.Load<GameObject>(fullPath);
             if (characterPrefab == null)
@@ -60,8 +61,8 @@ namespace GameLogic.Unit
 
             var unitInstance = Instantiate(characterController, unitRoot);
             var instanceID = Guid.NewGuid().ToString();
-            var runtimeData = new CharacterBattleRuntimeData(instanceID, data.characterData, faction, data.gridCoord,
-                data.direction);
+            var runtimeData = new CharacterBattleRuntimeData(instanceID, data.CharacterData, faction, data.GridCoord,
+                data.Direction);
             unitInstance.Initialize(runtimeData);
 
             // 命名

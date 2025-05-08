@@ -1,3 +1,4 @@
+using GameLogic.LevelSystem;
 using GameLogic.Map;
 using GameLogic.Unit;
 using MyFramework.Utilities;
@@ -10,18 +11,18 @@ namespace Events.Battle
     public class SpawnCharacterEvent : IEventArgs
     {
         public readonly Faction Faction;
-        public readonly BaseCharacterSpawnData[] SpawnQueue;
+        public readonly CharacterSpawnData[] SpawnQueue;
         
-        public SpawnCharacterEvent(Faction faction, BaseCharacterSpawnData[] data)
+        public SpawnCharacterEvent(Faction faction, CharacterSpawnData[] data)
         {
             Faction = faction;
             SpawnQueue = data;
         }
         
-        public SpawnCharacterEvent(CharacterSpawnData characterSpawnData)
+        public SpawnCharacterEvent(BatchCharacterSpawnData batchCharacterSpawnData)
         {
-            Faction = characterSpawnData.faction;
-            SpawnQueue = characterSpawnData.spawnQueue;
+            Faction = batchCharacterSpawnData.Faction;
+            SpawnQueue = batchCharacterSpawnData.SpawnQueue;
         }
     }
 }

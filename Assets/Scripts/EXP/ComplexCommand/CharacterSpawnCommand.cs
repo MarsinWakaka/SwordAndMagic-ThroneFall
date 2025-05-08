@@ -1,16 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
-using GameLogic.Map;
+using GameLogic.Unit;
 using GameLogic.Unit.Controller;
 
 namespace ComplexCommand
 {
     public class CharacterSpawnCommand : BaseCommand
     {
-        private readonly List<CharacterSpawnData> _charactersToSpawn;
+        private readonly List<BatchCharacterSpawnData> _charactersToSpawn;
         private List<CharacterUnitController> _charactersSpawned;
 
-        public CharacterSpawnCommand(List<CharacterSpawnData> charactersToSpawn)
+        public CharacterSpawnCommand(List<BatchCharacterSpawnData> charactersToSpawn)
         {
             _charactersToSpawn = charactersToSpawn;
         }

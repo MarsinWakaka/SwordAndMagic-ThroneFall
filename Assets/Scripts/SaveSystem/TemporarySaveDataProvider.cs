@@ -11,26 +11,30 @@ namespace SaveSystem
         {
             // CreateCharacterData
             // 1. Elaina
-            var elaina = ScriptableObject.CreateInstance<CharacterData>();
-            elaina.characterID = "Elaina";
-            elaina.level = 2;
-            elaina.activeSkillsData = new List<SkillData>()
+            var elaina = new CharacterData
             {
-                new() { skillID = "FireVolt", level = 1 },
-            };
-            elaina.passiveSkillsData = new List<SkillData>()
-            {
-                new() { skillID = "FoxPlan", level = 1 },
+                characterID = "Elaina",
+                level = 2,
+                activeSkillsData = new List<SkillData>()
+                {
+                    new() { skillID = "FireVolt", level = 1 },
+                },
+                passiveSkillsData = new List<SkillData>()
+                {
+                    new() { skillID = "FoxPlan", level = 1 },
+                }
             };
             // 2. Ais
-            var ais = ScriptableObject.CreateInstance<CharacterData>();
-            ais.characterID = "Ais";
-            ais.level = 1;
-            ais.activeSkillsData = new List<SkillData>()
+            var ais = new CharacterData
             {
-                new() { skillID = "DeltaSlash", level = 1 },
+                characterID = "Ais",
+                level = 1,
+                activeSkillsData = new List<SkillData>()
+                {
+                    new() { skillID = "DeltaSlash", level = 1 },
+                }
             };
-            
+
             return new SaveData()
             {
                 ownedCharacters = new List<CharacterData>()

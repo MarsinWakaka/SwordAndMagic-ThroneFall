@@ -40,14 +40,16 @@ MonoBehaviour:
   - {x: 0, y: 1}
   maxDeployCount: 2
   allowPlayerCharacters: 1
-  presetCharacters: []
+  presetCharacters:
+  - {fileID: 11400000, guid: 1e1dd29e459a76f438f3d963becdeb6f, type: 2}
+  - {fileID: 11400000, guid: ad0c3eaea47b4574cb81ae9ef735ddf0, type: 2}
   characterSpawnData:
   - faction: 1
     spawnQueue:
-    - characterData: {fileID: 11400000, guid: 1e1dd29e459a76f438f3d963becdeb6f, type: 2}
+    - characterPresentData: {fileID: 11400000, guid: 1e1dd29e459a76f438f3d963becdeb6f, type: 2}
       gridCoord: {x: 0, y: 2}
       direction: 0
-    - characterData: {fileID: 11400000, guid: 1e1dd29e459a76f438f3d963becdeb6f, type: 2}
+    - characterPresentData: {fileID: 11400000, guid: 1e1dd29e459a76f438f3d963becdeb6f, type: 2}
       gridCoord: {x: 1, y: 2}
       direction: 0
   tasks: []

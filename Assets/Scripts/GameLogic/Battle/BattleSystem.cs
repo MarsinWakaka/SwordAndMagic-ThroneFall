@@ -81,9 +81,9 @@ namespace GameLogic.Battle
                 // 2.单位管理器初始化
                 // battleChannel.Publish(GameEvent.UnitSpawnRequest, new LoadUnitRequest(mapContext.obstacles));
 
-                foreach (var context in mapContext.characterSpawnData)
+                foreach (var spawnDataConfig in mapContext.characterSpawnData)
                 {
-                    battleChannel.Publish(new SpawnCharacterEvent(context));
+                    battleChannel.Publish(new SpawnCharacterEvent(spawnDataConfig.ConvertToCharacterSpawnData()));
                 }
 
                 // 3.部署

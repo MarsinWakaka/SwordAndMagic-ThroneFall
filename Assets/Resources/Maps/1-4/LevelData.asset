@@ -101,6 +101,10 @@ MonoBehaviour:
   allowPlayerCharacters: 1
   presetCharacters:
   - {fileID: 11400000, guid: ad0c3eaea47b4574cb81ae9ef735ddf0, type: 2}
-  characterSpawnData: []
+  - {fileID: 11400000, guid: 51c95618a9c357340a624f0559425d1a, type: 2}
+  - {fileID: 11400000, guid: 1e1dd29e459a76f438f3d963becdeb6f, type: 2}
+  characterSpawnData:
+  - faction: 0
+    spawnQueue: []
   tasks: []
   reward: 0
