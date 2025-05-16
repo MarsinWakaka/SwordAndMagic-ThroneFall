@@ -1,5 +1,7 @@
+using System;
 using Core.SceneSystem;
 using Events.Battle;
+using GameLogic.BUFF;
 using GameLogic.Grid;
 using GameLogic.Map;
 using GameLogic.Unit;
@@ -10,6 +12,7 @@ using SoundSystem;
 using UI;
 using UI.ConcretePanel.Battle;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace GameLogic.Battle
 {
@@ -20,8 +23,9 @@ namespace GameLogic.Battle
     /// </summary>
     public class BattleSystem : MonoBehaviour
     {
+        [FormerlySerializedAs("unitManager")]
         [Header("服务注册区")]
-        [SerializeField] private UnitManager unitManager;
+        [SerializeField] private CharacterManager characterManager;
         [SerializeField] private GridManager gridManager;
 
         private void OnEnable()
@@ -29,7 +33,7 @@ namespace GameLogic.Battle
             // 注册服务
             // TODO 完成其它服务的注册 
             ServiceLocator.Register<IGridManager>(gridManager);
-            ServiceLocator.Register<IUnitManager>(unitManager);
+            ServiceLocator.Register<ICharacterManager>(characterManager);
             
             // 监听事件
             EventBus.Channel(Channel.Gameplay).Subscribe<LoadLevelEvent>(HandleLoadLevelEvent);
@@ -41,13 +45,19 @@ namespace GameLogic.Battle
             // 注销服务
             // TODO 完成其它服务的注销
             ServiceLocator.UnRegister<IGridManager>();
-            ServiceLocator.UnRegister<IUnitManager>();
+            ServiceLocator.UnRegister<ICharacterManager>();
             
             // 取消事件订阅
             EventBus.Channel(Channel.Gameplay).Unsubscribe<LoadLevelEvent>(HandleLoadLevelEvent);
             EventBus.Channel(Channel.Gameplay).Unsubscribe<FactionWipeEvent>(HandleFactionDead);
         }
-        
+
+        private void OnDestroy()
+        {
+            // BUFF系统的销毁顺序与BattleSystem的顺序不能确定，所以销毁前需要判断，以免再次制造出单例
+            if (!BuffSystem.IsInstanceNull) BuffSystem.Instance.ClearBuffs();
+        }
+
 #if UNITY_EDITOR
         [ContextMenu("LoadDefaultLevel")]
         private void LoadDefaultLevel()

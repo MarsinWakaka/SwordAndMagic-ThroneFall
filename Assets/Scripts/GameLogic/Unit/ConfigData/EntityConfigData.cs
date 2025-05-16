@@ -11,7 +11,7 @@ namespace GameLogic.Unit.ConfigData
     
     public abstract class EntityConfigData : ScriptableObject
     {
-        public string entityID;
+        public string EntityID => name;
         public string unitName;
         public Sprite icon;
         public EntityType entityType;

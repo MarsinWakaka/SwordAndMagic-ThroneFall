@@ -51,12 +51,12 @@ namespace GameLogic.Battle
                     // TODO : Clear Undo Stack
                     // 玩家回合 (通知玩家回合)
                     "[Player Turn]".LogWithColor(Color.cyan);
+                    SoundManager.Instance.PlaySFXOneShot(SFX.TurnStart);
                     UIManager.Instance.ShowPanel(PanelName.BattleTurnTipPanel, OpenStrategy.Additive, 
                         new TurnTipPanelParam(
                             "玩家回合",
                             () =>
                             {
-                                SoundManager.Instance.PlaySFXOneShot(SFX.TurnStart);
                                 UIManager.Instance.ClosePanel(PanelName.BattleTurnTipPanel);
                                 EventBus.Channel(Channel.Gameplay).Publish(
                                     new StartTurnEvent(CurRound, Faction.Player, () =>
@@ -64,12 +64,12 @@ namespace GameLogic.Battle
                                         // TODO : Clear Undo Stack
                                         // 敌人回合 (通知敌人回合)
                                         "[Enemy Turn]".LogWithColor(Color.cyan);
+                                        SoundManager.Instance.PlaySFXOneShot(SFX.TurnStart);
                                         UIManager.Instance.ShowPanel(PanelName.BattleTurnTipPanel, OpenStrategy.Additive,
                                             new TurnTipPanelParam(
                                                 "敌人回合",
                                                 () =>
                                                 {
-                                                    SoundManager.Instance.PlaySFXOneShot(SFX.TurnStart);
                                                     UIManager.Instance.ClosePanel(PanelName.BattleTurnTipPanel);
                                                     EventBus.Channel(Channel.Gameplay).Publish(
                                                         new StartTurnEvent(CurRound, Faction.Enemy, () =>

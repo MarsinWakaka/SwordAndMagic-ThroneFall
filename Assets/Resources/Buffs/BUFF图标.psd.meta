@@ -124,7 +124,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3de195b48c2d2a345b3835cbed704653
+      spriteID: c0c3cefff212ae543a40f6b4c11c48c3
       internalID: 1971203024
       vertices: []
       indices: 
@@ -145,8 +145,29 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1c5e40d400d3c3a4b94c630c4c537bc3
+      spriteID: d432e6d17fd84544da79f66df4036051
       internalID: 1935086222
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "BUFF\u56FE\u6807_2"
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f548eaa1ebca6af47b111b4e60fc4079
+      internalID: -925848544
       vertices: []
       indices: 
       edges: []
@@ -164,6 +185,7 @@ TextureImporter:
     nameFileIdTable:
       "BUFF\u56FE\u6807_0": 1971203024
       "BUFF\u56FE\u6807_1": 1935086222
+      "BUFF\u56FE\u6807_2": -925848544
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

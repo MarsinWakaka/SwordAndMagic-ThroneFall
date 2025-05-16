@@ -15,9 +15,10 @@ MonoBehaviour:
   characterData:
     characterID: Elaina
     level: 1
-    activeSkillsData:
-    - skillID: FireVolt
+    skillsData:
+    - skillID: Elaina_DefaultAttack
       level: 1
-    passiveSkillsData:
-    - skillID: FoxPlan
+    - skillID: Elaina_FireVolt
+      level: 1
+    - skillID: Elaina_Passive
       level: 1

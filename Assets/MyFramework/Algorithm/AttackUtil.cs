@@ -1,10 +1,16 @@
 using System.Collections.Generic;
+using System.Linq;
 using GameLogic.Skill.Active;
 using MyFramework.Utilities.Extensions;
 using UnityEngine;
 
 namespace MyFramework.Algorithm
 {
+    public interface IProvideCoordinate
+    {
+        Vector2Int Coordinate { get; }
+    }
+    
     public class AttackUtil
     {
         /// <summary>
@@ -36,6 +42,16 @@ namespace MyFramework.Algorithm
                 }
             }
             return false;
+        }
+
+        public static bool TryCalculateAttackPosition(
+            IEnumerable<IProvideCoordinate> moveablePos,
+            ActiveSkillConfig attackSkill,
+            Vector2Int targetPos,
+            out Vector2Int attackPosition)
+        {
+            var moveablePosList = moveablePos.Select(node => node.Coordinate);
+            return TryCalculateAttackPosition(moveablePosList, attackSkill, targetPos, out attackPosition);
         }
     }
 }

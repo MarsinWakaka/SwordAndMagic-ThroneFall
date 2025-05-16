@@ -8,6 +8,6 @@ namespace GameLogic.Unit
     {
         public string FriendlyInstanceID();
         public string InstanceID();
-        public Vector2Int GetCoordinate();
+        public Vector2Int Coordinate();
     }
 }

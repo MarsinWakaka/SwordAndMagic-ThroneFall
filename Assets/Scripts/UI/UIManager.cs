@@ -105,7 +105,7 @@ namespace UI
                 _curPanel.OnCreate(data);
                 _panelStack.Add(new PanelRecord().Initialize(panelName, data, _curPanel));
             }
-            Debug.Log("打开面板: " + panelName + "\t面板栈长度: " + _panelStack.Count);
+            // Debug.Log("打开面板: " + panelName + "\t面板栈长度: " + _panelStack.Count);
         }
         
         /// <summary>
@@ -131,7 +131,7 @@ namespace UI
             
             // 恢复栈顶面板状态
             if (_panelStack.Count > 0) RecoverTopPanelState();
-            Debug.Log("关闭面板: " + panelName + "\t面板栈长度: " + _panelStack.Count);
+            // Debug.Log("关闭面板: " + panelName + "\t面板栈长度: " + _panelStack.Count);
         }
 
         public void ClearAllPanel()

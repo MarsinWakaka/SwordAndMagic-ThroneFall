@@ -1,7 +1,5 @@
 using System;
 using Events.Battle;
-using GameLogic.LevelSystem;
-using GameLogic.Map;
 using GameLogic.Unit.BattleRuntimeData;
 using GameLogic.Unit.Controller;
 using MyFramework.Utilities;
@@ -12,7 +10,7 @@ namespace GameLogic.Unit
     public class CharacterFactory : MonoBehaviour
     {
         [SerializeField] private Transform unitRoot;
-        public string GetPrefabPath(string entityID) => $"Characters/{entityID}/Prefab";
+        public string GetPrefabPath(string entityID) => $"Characters/Prefab/{entityID}";
         
         private void Awake()
         {

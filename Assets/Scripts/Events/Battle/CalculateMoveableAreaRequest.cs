@@ -14,13 +14,19 @@ namespace Events.Battle
     public class CalculateMoveableAreaRequest : IEventArgs
     {
         public readonly CharacterBattleRuntimeData asker;
+        public readonly bool includeStart;
         
         public Action<MoveableAreaResult> onPathFindingComplete;
 
-        public CalculateMoveableAreaRequest(CharacterBattleRuntimeData asker, Action<MoveableAreaResult> onPathFindingComplete)
+        public CalculateMoveableAreaRequest(
+            CharacterBattleRuntimeData asker,
+            bool includeStart,
+            Action<MoveableAreaResult> onPathFindingComplete 
+            )
         {
             this.asker = asker;
             this.onPathFindingComplete = onPathFindingComplete;
+            this.includeStart = includeStart;
         }
     }
 

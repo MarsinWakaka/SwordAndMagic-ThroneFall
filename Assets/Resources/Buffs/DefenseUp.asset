@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: DefenseUp
   m_EditorClassIdentifier: 
   buffID: DefenseUp
-  buffType: Defence
   buffName: "\u9632\u5FA1\u63D0\u5347 |"
+  description: "\u51CF\u5C111\u70B9\u4E0B\u6B21\u6536\u5230\u7684\u4F24\u5BB3"
   icon: {fileID: 1971203024, guid: 3c654819d769aeb43a73a828a938d911, type: 3}
   priority: 0
   isPermanent: 0

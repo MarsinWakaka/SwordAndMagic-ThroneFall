@@ -62,7 +62,7 @@ namespace GameLogic.Grid
 
         private void SetupVisual()
         {
-            _renderer.sprite = RuntimeData.ConfigData.BaseSprite;
+            _renderer.sprite = RuntimeData.ConfigDataConfig.BaseSprite;
         }
 
         private void RegisterEvents()
@@ -87,6 +87,10 @@ namespace GameLogic.Grid
             _renderer.size = new Vector2(_renderer.size.x, 1 + newCoord.z * 0.25f);
         }
         
+        /// <summary>
+        /// 更新格子上的单位引用，并更新单位的网格坐标和世界坐标位置(角色重复进入自身位置也会更新)
+        /// </summary>
+        /// <param name="entityController"></param>
         public void OnUnitEnter(EntityController entityController)
         {
             if (RuntimeData.EntitiesOnThis == null)
@@ -96,11 +100,14 @@ namespace GameLogic.Grid
             }
             else
             {
-                // TODO 处理单位进入时的逻辑
                 Debug.LogWarning("Grid already occupied by another unit.");
             }
         }
         
+        /// <summary>
+        /// 更新格子上的单位引用，置为空，但不会更新单位的网格坐标和世界坐标位置
+        /// </summary>
+        /// <param name="entityController"></param>
         public void OnUnitLeave(EntityController entityController)
         {
             RuntimeData.EntitiesOnThis = null;
@@ -130,6 +137,7 @@ namespace GameLogic.Grid
 
         #region 拓展
 
+        public bool IsWalkAble => RuntimeData.ConfigDataConfig.Walkable;
 
         public Vector2Int GetGrid2DCoord()
         {

@@ -5,7 +5,7 @@ namespace Config
     public abstract class CharacterUpgradeCost
     {
         // 最高12级
-        private static readonly int[] Cost = {0, 30, 50, 80, 120, 180, 250, 350, 500, 700, 1000, 1500, 2000};
+        private static readonly int[] Cost = { 0, 25, 40, 50, 70, 100, 130, 150, 200 };
         private static int[] _accumulatedCost;
         
         public static int GetAccumulatedCost(int from, int to)

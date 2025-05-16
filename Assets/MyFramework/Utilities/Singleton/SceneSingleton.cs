@@ -23,6 +23,8 @@ namespace MyFramework.Utilities.Singleton
                 return _instance;
             }
         }
+        
+        public static bool IsInstanceNull => _instance == null;
 
         private void Awake()
         {

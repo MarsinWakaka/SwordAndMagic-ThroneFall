@@ -12,7 +12,7 @@ namespace UI.ConcretePanel.Battle
         
         public Action OnComplete;
 
-        public TurnTipPanelParam(string tipText, Action onComplete, float duration = 1f)
+        public TurnTipPanelParam(string tipText, Action onComplete, float duration = 0.8f)
         {
             TipText = tipText;
             Duration = duration;

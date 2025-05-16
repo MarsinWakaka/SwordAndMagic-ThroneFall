@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdfc85cd6ac44d2daa17fba3838e09f9, type: 3}
+  m_Name: Ais_Passive
+  m_EditorClassIdentifier: 
+  skillName: "\u5251\u4E4B\u5951\u7EA6"
+  skillIcon: {fileID: -1015468554, guid: 7eb59ff197a1aa349b39d28a6ace4e96, type: 3}
+  upgradeResourceCost: 41000000
+  data:
+  - maxTriggerCount: 2

@@ -1,9 +1,6 @@
-using System.Collections;
-using Events.Battle;
 using GameLogic.Character.BattleRuntimeData;
 using GameLogic.GameAction.Attack;
 using GameLogic.Grid;
-using GameLogic.TimeLine;
 using MyFramework.Utilities;
 using UnityEngine;
 
@@ -12,8 +9,8 @@ namespace GameLogic.Unit.Controller
     public abstract class EntityController : MonoBehaviour, ITakeDamageableEntity
     {
         protected Transform Trans;
-        public Animator Animator { get; private set; }
-        public SpriteRenderer Renderer { get; private set; }
+        public Animator Anim { get; protected set; }
+        public SpriteRenderer Renderer { get; protected set; }
 
         public EntityBattleRuntimeData RuntimeData { get; protected set; }
         
@@ -26,7 +23,7 @@ namespace GameLogic.Unit.Controller
         protected virtual void Awake()
         {
             Trans = transform;
-            Animator = GetComponent<Animator>();
+            Anim = GetComponent<Animator>();
             Renderer = GetComponent<SpriteRenderer>();
         }
 
@@ -37,36 +34,50 @@ namespace GameLogic.Unit.Controller
             Trans.position = CoordinateConverter.CoordToWorldPos(newCoord);
         }
 
-        protected class TeleportWrapper
+        // protected class TeleportWrapper
+        // {
+        //     public Vector2Int OldCoord;
+        //     public Vector2Int NewCoord;
+        //     public EntityController Entity;
+        //     
+        //     public TeleportWrapper(EntityController entity)
+        //     {
+        //         Entity = entity;
+        //     }
+        //     
+        //     public IEnumerator TeleportCoroutine()
+        //     {
+        //         var gridManager = ServiceLocator.Resolve<IGridManager>();
+        //         gridManager.MoveUnitFromAToB(Entity, OldCoord, NewCoord);
+        //         yield return new WaitForSeconds(1f);
+        //     }
+        // }
+        //
+        // protected TeleportWrapper TeleportExecutor;
+
+        private IGridManager _gridManager;
+        public IGridManager GridManager
         {
-            public Vector2Int OldCoord;
-            public Vector2Int NewCoord;
-            public EntityController Entity;
-            
-            public TeleportWrapper(EntityController entity)
+            get
             {
-                Entity = entity;
-            }
-            
-            public IEnumerator TeleportCoroutine()
-            {
-                var gridManager = ServiceLocator.Resolve<IGridManager>();
-                gridManager.MoveUnitFromAToB(Entity, OldCoord, NewCoord);
-                yield return new WaitForSeconds(1f);
+                if (_gridManager == null)
+                {
+                    _gridManager = ServiceLocator.Resolve<IGridManager>();
+                }
+                return _gridManager;
             }
         }
-
-        protected TeleportWrapper TeleportExecutor;
         
         /// <summary>
         /// 传送单位到指定位置
         /// </summary>
         public void Teleport(Vector2Int newCoord)
         {
-            TeleportExecutor ??= new TeleportWrapper(this);
-            TeleportExecutor.OldCoord = RuntimeData.gridCoord;
-            TeleportExecutor.NewCoord = newCoord;
-            TimeLineManager.Instance.AddPerform(TeleportExecutor.TeleportCoroutine);
+            GridManager.MoveUnitFromAToB(this, RuntimeData.gridCoord, newCoord);
+            // TeleportExecutor ??= new TeleportWrapper(this);
+            // TeleportExecutor.OldCoord = RuntimeData.gridCoord;
+            // TeleportExecutor.NewCoord = newCoord;
+            // TimeLineManager.Instance.AddPerform(TeleportExecutor.TeleportCoroutine);
         }
         
         // private IEnumerator TeleportCoroutine(Vector2Int newCoord)
@@ -108,11 +119,11 @@ namespace GameLogic.Unit.Controller
 
         public string InstanceID() => RuntimeData.InstanceID;
 
-        public Vector2Int GetCoordinate() => RuntimeData.gridCoord;
+        public Vector2Int Coordinate() => RuntimeData.gridCoord;
 
         public virtual void TakeDamage(DamageSegment damageSegment) {}
 
         public GridController GetGridController() =>
-            ServiceLocator.Resolve<IGridManager>().GetGridController(GetCoordinate());
+            ServiceLocator.Resolve<IGridManager>().GetGridController(Coordinate());
     }
 }

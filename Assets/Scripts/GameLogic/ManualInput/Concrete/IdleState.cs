@@ -1,3 +1,4 @@
+using GameLogic.Grid;
 using GameLogic.Unit.Controller;
 using MyFramework.Utilities.Stack;
 using UnityEngine;
@@ -44,20 +45,25 @@ namespace GameLogic.ManualInput.Concrete
         {
             if (hitInfo.collider == null) return;
             
-            var unit = hitInfo.collider.GetComponent<CharacterUnitController>();
-            if (unit != null)
+            var grid = hitInfo.collider.GetComponent<GridController>();
+            if (grid != null)
             {
-                if (unit.RuntimeData.faction == _manualInputController.canControlFaction)
+                var unit = grid.RuntimeData.EntitiesOnThis;
+                if (unit is CharacterUnitController character)
                 {
-                    _manualInputController.StackManager.Push(InputState.MovementSelect, new CharacterActionParam(unit));
+                    if (character.RuntimeData.faction == _manualInputController.canControlFaction)
+                    {
+                        _manualInputController.StackManager.Push(InputState.MovementSelect, new CharacterActionParam(character));
+                    }
+                    else
+                    {
+                        // TODO 进入侦察状态
+                        Debug.Log($"TODO {_manualInputController.canControlFaction} 侦察 {unit.FriendlyInstanceID()} 单位");
+                    }
+                    return;
                 }
-                else
-                {
-                    // TODO 进入侦察状态
-                    Debug.Log($"TODO {_manualInputController.canControlFaction} 侦察 {unit.FriendlyInstanceID()} 单位");
-                }
-                return;
             }
+            
         }
     }
 }

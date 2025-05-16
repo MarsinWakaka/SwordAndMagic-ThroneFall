@@ -4,38 +4,42 @@ using UnityEngine.Events;
 
 namespace MyFramework.Utilities
 {
-    [Serializable]
+    // [Serializable]
+    /// <summary>
+    /// 不可序列化
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class Bindable<T>
     {
-        [SerializeField] private T value;
+        [SerializeField] 
+        private T _value;
         public T Value
         {
-            get => value;
+            get => _value;
             set
             {
-                if (Equals(this.value, value)) return;
-                this.value = value;
-                _onValueChanged?.Invoke(this.value);
+                if (Equals(this._value, value)) return;
+                this._value = value;
+                OnValueChanged?.Invoke(this._value);
             }
         }
         
         // 不序列化（因为暂时没有这个需求）
-        private UnityEvent<T> _onValueChanged;
+        private event Action<T> OnValueChanged;
         
-        public void AddListener(UnityAction<T> action)
+        public void AddListener(Action<T> action)
         {
-            _onValueChanged ??= new UnityEvent<T>();
-            _onValueChanged.AddListener(action);
+            OnValueChanged += action;
         }
         
-        public void RemoveListener(UnityAction<T> action)
+        public void RemoveListener(Action<T> action)
         {
-            _onValueChanged?.RemoveListener(action);
+            OnValueChanged -= action;
         }
 
         public Bindable(T value = default)
         {
-            this.value = value;
+            this._value = value;
         }
     }
 }

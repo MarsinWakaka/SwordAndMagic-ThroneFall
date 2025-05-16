@@ -76,7 +76,7 @@ namespace GameLogic.ManualInput.Concrete
                 new CalculateAttackableAreaRequest(
                     new AttackParam()
                     {
-                        GridCoord = _character.GetCoordinate(),
+                        GridCoord = _character.Coordinate(),
                         AttackRange = _activeSkillInstance.ActiveConfig.attackRange
                     }, HandleAreaResult));
         }
@@ -128,12 +128,15 @@ namespace GameLogic.ManualInput.Concrete
             if (hitInfo.collider == null) return;
             var grid = hitInfo.collider.GetComponent<GridController>();
             if (grid == null) return;
+            var gridCoord = grid.GetGrid2DCoord();
             // 判断是否在攻击范围内
-            if (!_attackableAreaResult.IsInAttackableArea(grid.RuntimeData.GridCoord.Value)) return;
+            if (!_attackableAreaResult.IsInAttackableArea(gridCoord)) return;
             
             // 实际可攻击到的范围，计算并显示
-            var skillScope = _activeSkillInstance.ActiveConfig
-                .GetSkillScope(grid.GetGrid2DCoord(), Direction.Up, GridManagerCache.IsGridExist);
+            var skillScope = _activeSkillInstance.ActiveConfig.GetSkillScope(
+                _character.Coordinate(),
+                gridCoord, 
+                GridManagerCache.IsWalkableTerrain);
             EventBus.Channel(Channel.Gameplay).Publish(new AreaDisplayEvent(AreaType.Skill, skillScope, true));
             
             // 构造技能选择上下文
@@ -189,6 +192,9 @@ namespace GameLogic.ManualInput.Concrete
             _manualInputController.StackManager.Pop();
         }
 
+        /// <summary>
+        /// 处理攻击确认
+        /// </summary>
         private void HandleConfirmButtonClicked(SkillReleaseConfirmInput confirm)
         {
             if (_activeSkillSelectContext == null)
@@ -199,8 +205,7 @@ namespace GameLogic.ManualInput.Concrete
             var wrapper = new ActiveSkillExecuteContextWrapper(_activeSkillSelectContext, _activeSkillInstance.Execute);
             // TODO 处理攻击确认
             TimeLineManager.Instance.AddPerform(wrapper.Execute);
-            _character.OnEndAction();
-            _manualInputController.StackManager.Pop();
+            _manualInputController.OnCharacterAction(_character.CharacterRuntimeData);
         }
     }
 }

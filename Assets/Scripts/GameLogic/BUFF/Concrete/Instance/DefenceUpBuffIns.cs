@@ -1,6 +1,7 @@
 using System;
 using Config;
 using Core.Log;
+using GameLogic.BUFF.Concrete.Config;
 using GameLogic.GameAction.Attack;
 using GameLogic.Unit.Controller;
 using UnityEngine;
@@ -20,7 +21,7 @@ namespace GameLogic.BUFF.Concrete.Instance
             get
             {
                 if (_defenceUpBuff != null) return _defenceUpBuff;
-                var buffConfig = BuffConfigManager.GetConfig(BuffID);
+                var buffConfig = BuffConfigManager.GetConfig(buffID);
                 if (buffConfig is DefenceUpBuff coverBuff)
                 {
                     _defenceUpBuff = coverBuff;
@@ -33,35 +34,10 @@ namespace GameLogic.BUFF.Concrete.Instance
         }
         private DefenceUpBuff _defenceUpBuff;
 
-        public override void StackBuff(int stackCount)
-        {
-            if (curStackCount == 0)
-            {
-                // TODO 处理buff第一次添加的情况
-                curStackCount = stackCount;
-                // 监听事件，例如友军被攻击、回合开始、或者敌人攻击前
-                OnAddBuffEffect();
-            }
-            else
-            {
-                // TODO 处理buff叠加的情况
-                curStackCount = Mathf.Max(curStackCount + stackCount, DefenceUpBuffConfig.maxStackCount);
-            }
-        }
         
-        public void ReduceStackCount(int stackCount)
+        protected override void OnApplyBuffEffect()
         {
-            curStackCount -= stackCount;
-            if (curStackCount <= 0)
-            {
-                // TODO 处理buff消失的情况
-                OnRemoveBuffEffect();
-            }
-        }
-
-        protected override void OnAddBuffEffect()
-        {
-            // TODO 处理buff添加的情况
+            base.OnApplyBuffEffect();
             var allyFactionBuffManager = BuffSystem.Instance.GetFactionBuffs(Owner.CharacterRuntimeData.faction);
             allyFactionBuffManager.FactionBuffTriggers.OnPreTakeDamage += OnBuffTriggered;
         }
@@ -70,13 +46,14 @@ namespace GameLogic.BUFF.Concrete.Instance
         {
             var allyFactionBuffManager = BuffSystem.Instance.GetFactionBuffs(Owner.CharacterRuntimeData.faction);
             allyFactionBuffManager.FactionBuffTriggers.OnPreTakeDamage -= OnBuffTriggered;
+            base.OnRemoveBuffEffect();
         }
 
         private void OnBuffTriggered(AttackAction attackAction)
         {
             if (!IsDefenderSelf(attackAction)) return;  // 受击者需为自身
             
-            BattleLogManager.Instance.Log($"[{Owner.FriendlyInstanceID()}] 触发了 [{BuffName.DefenseUp}]");
+            BattleLogManager.Instance.Log($"[{Owner.FriendlyInstanceID()}] 触发了 [{BuffID.DefenseUp}]");
             foreach (var damageData in attackAction.DamageSegments)
             {
                 damageData.Damage = Mathf.Max(damageData.Damage - DefenceUpBuffConfig.increaseAmount, 0);

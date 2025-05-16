@@ -15,7 +15,10 @@ MonoBehaviour:
   characterData:
     characterID: Ais
     level: 1
-    activeSkillsData:
-    - skillID: DeltaSlash
+    skillsData:
+    - skillID: Ais_DefaultAttack
       level: 1
-    passiveSkillsData: []
+    - skillID: Ais_DeltaSlash
+      level: 1
+    - skillID: Ais_Passive
+      level: 1

@@ -1,8 +1,6 @@
 using System;
 using Core.Log;
 using GameLogic.Unit.Controller;
-using MyFramework.Utilities.Extensions;
-using UnityEngine;
 
 namespace GameLogic.Skill
 {
@@ -22,12 +20,17 @@ namespace GameLogic.Skill
             this.skillLevel = skillLevel;
         }
         
-        public virtual void TakeEffect(CharacterUnitController owner)
+        public virtual void Initialize(CharacterUnitController owner)
         {
             Owner = owner;
             ownerInstanceID = owner.RuntimeData.InstanceID;
-            BattleLogManager.Instance.Log($"{owner.CharacterRuntimeData.ConfigData.entityID}的[{BaseConfig.skillName}]生效");
+            BattleLogManager.Instance.Log($"{owner.CharacterRuntimeData.ConfigData.EntityID}的[{BaseConfig.skillName}]初始化");
         }
+        
+        /// <summary>
+        /// 回合刷新时调用
+        /// </summary>
+        public abstract void OnTurnStart();
         
         public virtual string GetDescription()
         {

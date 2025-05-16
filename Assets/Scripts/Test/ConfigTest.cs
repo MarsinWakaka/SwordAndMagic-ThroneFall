@@ -10,7 +10,7 @@ namespace Test
         [ContextMenu("TestLoadActiveSkillConfig")]
         public void TestLoadActiveSkillConfig()
         {
-            var skillConfig = ActiveSkillConfigManager.Instance.GetConfig(skillConfigID);
+            var skillConfig = SkillConfigManager.Instance.GetConfig(skillConfigID);
             if (skillConfig != null)
             {
                 Debug.Log($"技能配置 {skillConfigID} 加载成功");
@@ -24,7 +24,7 @@ namespace Test
         [ContextMenu("TestLoadBaseSkillConfig")]
         public void TestLoadBaseSkillConfig()
         {
-            var skillConfig = BaseSkillConfigManager.Instance.GetSkillConfig(skillConfigID);
+            var skillConfig = SkillConfigManager.Instance.GetConfig(skillConfigID);
             if (skillConfig != null)
             {
                 Debug.Log($"技能配置 {skillConfigID} 加载成功");

@@ -7,9 +7,9 @@ namespace Events.Battle
     public class CharacterBuffAppliedEvent : IEventArgs
     {
         public CharacterUnitController Target { get; }
-        public Buff Buff { get; }
+        public BuffConfig Buff { get; }
         
-        public CharacterBuffAppliedEvent(CharacterUnitController target, Buff buff)
+        public CharacterBuffAppliedEvent(CharacterUnitController target, BuffConfig buff)
         {
             Target = target;
             Buff = buff;

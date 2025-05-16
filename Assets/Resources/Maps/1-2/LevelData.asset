@@ -22,13 +22,13 @@ MonoBehaviour:
     height: 0
   - cellID: 1
     gridCoord: {x: 0, y: 1}
-    height: 1
-  - cellID: 1
+    height: 0
+  - cellID: 2
     gridCoord: {x: 0, y: 2}
-    height: 1
-  - cellID: 1
+    height: 0
+  - cellID: 2
     gridCoord: {x: 0, y: 3}
-    height: 1
+    height: 0
   - cellID: 1
     gridCoord: {x: 0, y: 4}
     height: 0
@@ -40,10 +40,10 @@ MonoBehaviour:
     height: 0
   - cellID: 1
     gridCoord: {x: 1, y: 1}
-    height: 1
+    height: 0
   - cellID: 1
     gridCoord: {x: 1, y: 2}
-    height: 1
+    height: 0
   - cellID: 1
     gridCoord: {x: 1, y: 3}
     height: 0
@@ -59,10 +59,10 @@ MonoBehaviour:
   - cellID: 1
     gridCoord: {x: 2, y: 1}
     height: 0
-  - cellID: 1
+  - cellID: 2
     gridCoord: {x: 2, y: 2}
     height: 0
-  - cellID: 1
+  - cellID: 2
     gridCoord: {x: 2, y: 3}
     height: 0
   - cellID: 1
@@ -71,11 +71,50 @@ MonoBehaviour:
   - cellID: 1
     gridCoord: {x: 2, y: 5}
     height: 0
+  - cellID: 1
+    gridCoord: {x: 3, y: 0}
+    height: 0
+  - cellID: 1
+    gridCoord: {x: 3, y: 1}
+    height: 0
+  - cellID: 2
+    gridCoord: {x: 3, y: 2}
+    height: 0
+  - cellID: 2
+    gridCoord: {x: 3, y: 3}
+    height: 0
+  - cellID: 1
+    gridCoord: {x: 3, y: 4}
+    height: 0
+  - cellID: 1
+    gridCoord: {x: 3, y: 5}
+    height: 0
+  - cellID: 1
+    gridCoord: {x: 4, y: 0}
+    height: 0
+  - cellID: 1
+    gridCoord: {x: 4, y: 1}
+    height: 0
+  - cellID: 1
+    gridCoord: {x: 4, y: 2}
+    height: 0
+  - cellID: 1
+    gridCoord: {x: 4, y: 3}
+    height: 0
+  - cellID: 1
+    gridCoord: {x: 4, y: 4}
+    height: 0
+  - cellID: 1
+    gridCoord: {x: 4, y: 5}
+    height: 0
+  maxDeployCount: 2
   deployableGrids:
   - {x: 0, y: 0}
-  - {x: 1, y: 0}
-  - {x: 2, y: 0}
-  maxDeployCount: 2
+  - {x: 0, y: 1}
+  - {x: 3, y: 0}
+  - {x: 3, y: 1}
+  - {x: 4, y: 0}
+  - {x: 4, y: 1}
   allowPlayerCharacters: 1
   presetCharacters: []
   characterSpawnData:
@@ -90,5 +129,8 @@ MonoBehaviour:
     - characterPresentData: {fileID: 11400000, guid: 1e1dd29e459a76f438f3d963becdeb6f, type: 2}
       gridCoord: {x: 2, y: 5}
       direction: 0
+    - characterPresentData: {fileID: 11400000, guid: 1e1dd29e459a76f438f3d963becdeb6f, type: 2}
+      gridCoord: {x: 1, y: 5}
+      direction: 0
   tasks: []
-  reward: 200
+  reward: 80

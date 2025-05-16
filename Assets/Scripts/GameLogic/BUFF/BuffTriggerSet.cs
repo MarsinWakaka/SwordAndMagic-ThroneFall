@@ -31,5 +31,13 @@ namespace GameLogic.BUFF
         {
             OnAfterTakeDamage?.Invoke(attackAction);
         }
+        
+        public void Clear()
+        {
+            OnPreDoDamage = null;
+            OnAfterDoDamage = null;
+            OnPreTakeDamage = null;
+            OnAfterTakeDamage = null;
+        }
     }
 }

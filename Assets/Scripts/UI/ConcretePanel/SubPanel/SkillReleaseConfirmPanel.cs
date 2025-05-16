@@ -1,4 +1,3 @@
-using Events;
 using Events.Battle.Skill;
 using GameLogic.Skill.Active;
 using MyFramework.Utilities;
@@ -23,6 +22,8 @@ namespace UI.ConcretePanel.SubPanel
         [SerializeField] private Button cancelButton;
         
         [SerializeField] private Text skillNameText;
+        [SerializeField] private Text skillSpCostText;
+        [SerializeField] private Text skillCdTimeText;
         [SerializeField] private Text skillDescriptionText;
 
         public override void OnCreate(object data)
@@ -68,7 +69,11 @@ namespace UI.ConcretePanel.SubPanel
         private void SetVisual(ActiveSkillInstance skillInstance)
         {
             var config = skillInstance.ActiveConfig;
+            var skillCost = skillInstance.SKillData.skillPointCost;
+            var cdTime = skillInstance.maxCooldown;
             skillNameText.text = config.skillName;
+            skillSpCostText.text = skillCost == 0 ? "--" : skillCost.ToString();
+            skillCdTimeText.text = cdTime == 0 ? "--" : cdTime.ToString();
             skillDescriptionText.text = skillInstance.GetDescription();
         }
 

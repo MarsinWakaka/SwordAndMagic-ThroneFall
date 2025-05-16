@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using GameLogic.Skill.Active;
-using GameLogic.Unit.BattleRuntimeData;
 using UnityEngine;
 
 namespace GameLogic.Grid.Area
@@ -75,7 +73,7 @@ namespace GameLogic.Grid.Area
             {
                 for (var y = down; y <= up; y++)
                 {
-                    if (!_gridManager.IsGridExist(x, y)) continue;
+                    if (!_gridManager.IsWalkableTerrain(x, y)) continue;
                     var distance = Mathf.Abs(x - gridCoord.x) + Mathf.Abs(y - gridCoord.y);
                     if (distance >= minAttackRange && distance <= maxAttackRange)
                     {

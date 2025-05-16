@@ -29,7 +29,7 @@ MonoBehaviour:
   - cellID: 1
     gridCoord: {x: 0, y: 3}
     height: 2
-  - cellID: 1
+  - cellID: 3
     gridCoord: {x: 1, y: 0}
     height: 0
   - cellID: 1
@@ -92,17 +92,14 @@ MonoBehaviour:
   - cellID: 1
     gridCoord: {x: 4, y: 0}
     height: 2
+  maxDeployCount: 3
   deployableGrids:
   - {x: 0, y: 0}
   - {x: 1, y: 0}
   - {x: 0, y: 1}
   - {x: 1, y: 1}
-  maxDeployCount: 3
   allowPlayerCharacters: 1
-  presetCharacters:
-  - {fileID: 11400000, guid: ad0c3eaea47b4574cb81ae9ef735ddf0, type: 2}
-  - {fileID: 11400000, guid: 51c95618a9c357340a624f0559425d1a, type: 2}
-  - {fileID: 11400000, guid: 1e1dd29e459a76f438f3d963becdeb6f, type: 2}
+  presetCharacters: []
   characterSpawnData:
   - faction: 0
     spawnQueue: []

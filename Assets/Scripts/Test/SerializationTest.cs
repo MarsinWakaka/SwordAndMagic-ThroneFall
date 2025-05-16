@@ -5,7 +5,7 @@ namespace Test
 {
     public class SerializationTest : MonoBehaviour
     {
-        [SerializeField] private Buff buff;
+        [SerializeField] private BuffConfig buff;
         
         private void Start()
         {

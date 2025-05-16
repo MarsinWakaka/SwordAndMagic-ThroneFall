@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: AttackUp
   m_EditorClassIdentifier: 
   buffID: AttackUp
-  buffType: Attack
   buffName: "\u653B\u51FB\u63D0\u5347 |"
+  description: "\u589E\u52A01\u70B9\u4E0B\u4E00\u6B21\u653B\u51FB\u7684\u4F24\u5BB3"
   icon: {fileID: 1935086222, guid: 3c654819d769aeb43a73a828a938d911, type: 3}
   priority: 0
   isPermanent: 0

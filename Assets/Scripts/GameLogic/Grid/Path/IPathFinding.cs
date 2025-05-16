@@ -1,29 +1,52 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MyFramework.Algorithm;
 using MyFramework.DataStructure;
+using MyFramework.Utilities.Extensions;
 using UnityEngine;
 
 namespace GameLogic.Grid.Path
 {
     public interface IPathFinding
     {
-        // 获取到某个位置的路径，并选择是否包含终点
-        public List<Vector2Int> FindPath(Vector2Int start, Vector2Int end, bool includeStart, bool includeEnd);
+        /// <summary>
+        /// 寻找找到一条从A通往B的路径
+        /// </summary>
+        /// <param name="a">起点</param>
+        /// <param name="b">终点，如果终点被占用，则返回NULL</param>
+        /// <param name="includeStart"></param>
+        /// <returns>如果没有路径则返回NULL</returns>
+        public List<Vector2Int> FindPath(Vector2Int a, Vector2Int b, bool includeStart = false);
+        
+        /// <summary>
+        /// 找到一条最接近目标点的路径
+        /// </summary>
+        /// <param name="a">起点</param>
+        /// <param name="b">终点</param>
+        /// <param name="includeStart"></param>
+        /// <param name="distThreshold">当节点与目标相差的曼哈顿距离小于等于指定值时直接返回结果,等于0时退化为找到目的地算法</param>
+        /// <returns>返回路径列表，起点与终点一致时，返回空路径列表，如果没有路径则返回NULL</returns>
+        public List<Vector2Int> TryFindPathToCloseTarget(Vector2Int a, Vector2Int b, int distThreshold, bool includeStart = false);
         public List<Vector2Int> GetAllMoveableArea(Vector2Int startPos, int moveRange)
         {
             var pathTreeNodes = CalculateAllMoveablePath(startPos, moveRange);
             return pathTreeNodes.Select(node => node.Coord).ToList();
         }
-        public List<PathTreeNode> CalculateAllMoveablePath(Vector2Int startPos, int moveRange);
+        public List<PathTreeNode> CalculateAllMoveablePath(Vector2Int startPos, int moveRange, bool includeStart = false);
     }
 
-    public class PathTreeNode
+    public class PathTreeNode: IProvideCoordinate
     {
         public Vector2Int Coord;
         public PathTreeNode Parent;
 
-        public List<Vector2Int> ToPathWayList(bool isReverse = false)
+        /// <summary>
+        /// 反向推导得到路径
+        /// </summary>
+        /// <param name="includeStart">如果需要包含起点，则返回的列表中第一个元素为起点</param>
+        /// <returns></returns>
+        public List<Vector2Int> ToPathWayList(bool includeStart = false)
         {
             var reverseList = new List<Vector2Int>();
             var curNode = this;
@@ -32,16 +55,18 @@ namespace GameLogic.Grid.Path
                 reverseList.Add(curNode.Coord);
                 curNode = curNode.Parent;
             }
-            if (!isReverse) reverseList.Reverse();
+            if (!includeStart) reverseList.RemoveAt(reverseList.Count - 1);
+            reverseList.Reverse();
             return reverseList;
         }
+
+        public Vector2Int Coordinate => Coord;
     }
     
     public class PathFindImpl : IPathFinding
     {
         private readonly IGridManager _gridManager;
-        private bool IsGridExist(Vector2Int coord) => _gridManager.IsGridExist(coord.x, coord.y);
-        private bool IsGridExist(int x, int y) => _gridManager.IsGridExist(x, y);
+        private bool CanMoveTo(Vector2Int coord) => _gridManager.CanMoveTo(coord.x, coord.y);
         
         private static readonly Vector2Int[] Directions =
         {
@@ -62,22 +87,32 @@ namespace GameLogic.Grid.Path
         public class Node : IComparable<Node>, IEquatable<Node>
         {
             public readonly Vector2Int Coord;
-            // G值：从起点到当前节点的实际代价
-            public int GCost;
-            // H值：从当前节点到终点的预估代价
-            public int HCost;
+
+            private int _gCost;
+
+            /// G值：从起点到当前节点的实际代价
+            public int GCost
+            {
+                get => _gCost;
+                set
+                {
+                    _gCost = value;
+                    FCost = _gCost + HCost;
+                }
+            }
+            /// H值：从当前节点到终点的启发(预估)代价(通常不更新)
+            public readonly int HCost;
 
             public Node From;
             
-            // F值：G值 + H值, 表示从起点到终点的预估总代价
+            /// F值：G值 + H值, 表示从起点到终点的预估总代价
             public int FCost { get; private set; }
 
             public Node(Vector2Int coord, int gCost, int hCost)
             {
                 Coord = coord;
-                GCost = gCost;
                 HCost = hCost;
-                FCost = gCost + hCost;
+                GCost = gCost;
             }
 
             // 调试友好输出
@@ -97,65 +132,112 @@ namespace GameLogic.Grid.Path
             }
         }
         
-        // 使用SortedList来管理开放列表，按F值排序
-        private readonly PriorityQueue<Node> _costPriorityQueue = new();
-        // 使用HashSet来管理关闭列表，避免重复节点
+        /// <summary>
+        /// 优先队列，存储待访问的节点
+        /// </summary>
+        private readonly PriorityQueue<Node> _costPq = new();
+        /// <summary>
+        /// 使用HashSet来管理关闭列表，避免重复节点
+        /// </summary>
         private readonly Dictionary<Vector2Int, Node> _visitedNode = new ();
         
-        // 使用过A*算法
-        public List<Vector2Int> FindPath(Vector2Int start, Vector2Int end, bool includeStart, bool includeEnd)
+        /// <summary>
+        /// 使用过A*算法，尝试寻找找到一条从A通往B的路径
+        /// </summary>
+        /// <param name="a">起点</param>
+        /// <param name="b">终点，如果终点被占用，则返回NULL</param>
+        /// <param name="includeStart"></param>
+        /// <returns>如果没有路径则返回NULL</returns>
+        public List<Vector2Int> FindPath(Vector2Int a, Vector2Int b, bool includeStart = false)
         {
-            _costPriorityQueue.Clear();
+            return TryFindPathToCloseTarget(a, b, 0, includeStart);
+        }
+
+        /// <summary>
+        /// 找到一条最接近目标点的路径
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="includeStart"></param>
+        /// <param name="distThreshold">当节点与目标相差的曼哈顿距离小于等于指定值时直接返回结果,等于0时退化为找到目的地算法</param>
+        /// <returns>返回路径列表，起点与终点一致时，返回空路径列表，如果没有路径则返回NULL</returns>
+        public List<Vector2Int> TryFindPathToCloseTarget(Vector2Int a, Vector2Int b, int distThreshold, bool includeStart = false)
+        {
+            switch (distThreshold)
+            {
+                case < 0:
+                    Debug.LogError($"距离阈值 {distThreshold} 不合法");
+                    return null;
+                case 0 when !CanMoveTo(b):
+                    Debug.LogWarning($"目标点 {b} 被占用，无法到达");
+                    return null;
+            }
+            if (a == b) return null;
+            _costPq.Clear();
             _visitedNode.Clear();
             
-            var startNode = new Node(start, 0, Heuristic(start, end));
-            _costPriorityQueue.Enqueue(startNode);
+            var startNode = new Node(a, 0, Heuristic(a, b));
+            _costPq.Enqueue(startNode);
+            _visitedNode.TryAdd(startNode.Coord, startNode);
             
-            while (_costPriorityQueue.Count > 0)
+            while (_costPq.Count > 0)
             {
                 // 2.1 找到F值最小的节点
-                var currentNode = _costPriorityQueue.Dequeue();
-                _visitedNode.Add(currentNode.Coord, currentNode);
+                var curNode = _costPq.Dequeue();
+                // if (_visitedNode.ContainsKey(currentNode.Coord)) continue;
+                Debug.Log($"正在访问: [{curNode.Coord}] G:{curNode.GCost} H:{curNode.HCost} F:{curNode.FCost}");
                 
                 // 2.2 检查是否到达目标节点
-                if (currentNode.Coord == end)
+                if (curNode.Coord.ManhattanDistance(b) <= distThreshold)
                 {
-                    return RetracePath(currentNode, includeStart, includeEnd);
+                    // 直接返回路径
+                    _costPq.Clear();
+                    _visitedNode.Clear();
+                    return RetracePath(curNode, includeStart);
                 }
                 
                 // 2.3 扩展邻居节点
                 foreach (var direction in Directions)
                 {
-                    var neighborCoord = currentNode.Coord + direction;
-                    if (!IsGridExist(neighborCoord)) continue;
-                    if (_visitedNode.TryGetValue(neighborCoord, out var neighborNode))
+                    var neighborCoord = curNode.Coord + direction;
+                    if (!CanMoveTo(neighborCoord)) continue;
+                    // 经过当前节点到达邻居节点的代价
+                    var moveCost = curNode.GCost + GetCost(curNode.Coord, neighborCoord);
+                    
+                    if (_visitedNode.TryGetValue(neighborCoord, out var visitedNode))
                     {
-                        // 如果该节点已经在关闭列表中，并且F值更小，则跳过
-                        if (_visitedNode[neighborCoord].FCost <= currentNode.FCost)
-                        {
-                            continue;
-                        }
-
-                        // 更新该节点
-                        neighborNode.GCost = currentNode.GCost + GetCost(currentNode.Coord, neighborCoord);
-                        neighborNode.From = currentNode;
-                        // 添加至探索列表
-                        _costPriorityQueue.Enqueue(neighborNode);
+                        continue;
+                        // // TODO 如果不同地形的消耗不一样(并非能否行走)，则需要重新计算，
+                        // 这里需要想办法删除优先队列之前存的旧节点，或者添加标记等处理
+                        // // 如果该节点已经在关闭列表中，并且G值相等或者更小，则跳过
+                        // if (visitedNode.GCost <= moveCost) continue;
+                        // _visitedNode.Remove(neighborCoord);
+                        //
+                        // // 更新旧节点
+                        // visitedNode.GCost = moveCost;
+                        // visitedNode.From = curNode;
+                        // // TODO 删掉优先队列中原有的节点
+                        // _costPq.Enqueue(visitedNode);
                     }
                     else
                     {
-                        // 计算G值
-                        var gCost = currentNode.GCost + GetCost(currentNode.Coord, neighborCoord);
-                        var hCost = Heuristic(neighborCoord, end);
-                        var newNode = new Node(neighborCoord, gCost, hCost)
+                        // 添加新的节点
+                        var newNode = new Node(neighborCoord, moveCost, Heuristic(neighborCoord, b))
                         {
-                            From = currentNode
+                            From = curNode
                         };
-                        _costPriorityQueue.Enqueue(newNode);
+                        _costPq.Enqueue(newNode);
+                        if (!_visitedNode.TryAdd(neighborCoord, newNode))
+                        {
+                            Debug.LogError($"当前节点 {neighborCoord} 已经在关闭列表中，无法添加");
+                        }
                     }
                 }
             }
-            return new List<Vector2Int>(); // 如果没有路径，返回空列表
+            
+            _costPq.Clear();
+            _visitedNode.Clear();
+            return null; // 如果没有路径，返回null
         }
 
         // 启发式函数
@@ -171,7 +253,7 @@ namespace GameLogic.Grid.Path
             return Mathf.Abs(start.x - end.x) + Mathf.Abs(start.y - end.y);
         }
         
-        private List<Vector2Int> RetracePath(Node endNode, bool includeStart, bool includeEnd)
+        private List<Vector2Int> RetracePath(Node endNode, bool includeStart)
         {
             var path = new List<Vector2Int>();
             var currentNode = endNode;
@@ -184,14 +266,20 @@ namespace GameLogic.Grid.Path
             
             // 如果不包含起点和终点，则移除
             if (!includeStart) path.RemoveAt(0);
-            if (!includeEnd) path.RemoveAt(path.Count - 1);
             
             return path;
         }
 
         #endregion
 
-        public List<PathTreeNode> CalculateAllMoveablePath(Vector2Int startPos, int moveRange)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="startPos"></param>
+        /// <param name="moveRange"></param>
+        /// <param name="includeStart"></param>
+        /// <returns></returns>
+        public List<PathTreeNode> CalculateAllMoveablePath(Vector2Int startPos, int moveRange, bool includeStart = false)
         {
             var result = new List<PathTreeNode>();
             var queue = new Queue<PathTreeNode>();
@@ -201,7 +289,7 @@ namespace GameLogic.Grid.Path
                 Coord = new Vector2Int(startPos.x, startPos.y), 
                 Parent = null
             };
-            result.Add(startNode);
+            if(includeStart) result.Add(startNode);
             queue.Enqueue(startNode);
             visited.Add(startPos);
             var curStep = 0;
@@ -219,7 +307,7 @@ namespace GameLogic.Grid.Path
                         var nextX = curCoord.x + direction.x;
                         var nextY = curCoord.y + direction.y;
                         var nextCoord = new Vector2Int(nextX, nextY);
-                        if (!IsGridExist(nextCoord) || visited.Contains(nextCoord)) continue;
+                        if (!CanMoveTo(nextCoord) || visited.Contains(nextCoord)) continue;
                         var nextHeight = _gridManager.QueryHeight(curCoord.x, curCoord.y);
                         if (Mathf.Abs(curHeight - nextHeight) > 1) continue;
                         var nextNode = new PathTreeNode
@@ -235,18 +323,5 @@ namespace GameLogic.Grid.Path
             }
             return result;
         }
-
-        // /// 检查格子是否可通行
-        // private bool IsGridValid(Vector2Int coord)
-        // {
-        //     // 首先检查是否在范围内
-        //     if (!InRange(coord)) return false;
-        //     // 检查格子是否被阻挡
-        //     var grid = _gridManager.GetGridController(coord);
-        //     if (grid == null) return false;
-        //     if (grid.RuntimeData.EntitiesOnThis == null) return false;
-        //     
-        //     return true;
-        // }
     }
 }

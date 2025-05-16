@@ -1,11 +1,12 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Events.Battle;
 using GameLogic.Grid;
 using GameLogic.ManualInput.Concrete;
+using GameLogic.TimeLine;
 using GameLogic.Unit;
-using GameLogic.Unit.ConfigData;
+using GameLogic.Unit.BattleRuntimeData;
 using GameLogic.Unit.Controller;
 using MyFramework.Utilities;
 using MyFramework.Utilities.Extensions;
@@ -29,8 +30,8 @@ namespace GameLogic.ManualInput
         public LayerMask groundLayer;
         public LayerMask entityLayer;
         
-        private IGridManager _gridManagerCache;
-        
+        private StartTurnEvent _curTurnEvent;
+
         private void Awake()
         {
             _viewCamera = Camera.main;
@@ -41,12 +42,7 @@ namespace GameLogic.ManualInput
             
             HideGhostAvatar();
         }
-
-        private void Start()
-        {
-            _gridManagerCache = ServiceLocator.Resolve<IGridManager>();
-        }
-
+        
         private void Update()
         {
             if (EnableMouseHoverStyle) DrawMouseHoverStyleOnGrid();
@@ -65,17 +61,15 @@ namespace GameLogic.ManualInput
             EventCenter.Register<StartTurnEvent>(HandleTurnStartEvent);
             // 注册玩家输入事件
             EventBus.Channel(Channel.Gameplay).Subscribe<StartTurnEvent>(HandleTurnStartEvent);
-            EventBus.Channel(Channel.Gameplay).Subscribe<ActionEndEvent>(HandleCharacterActionEnd);
+            EventBus.Channel(Channel.Gameplay).Subscribe<ActionEndEvent>(HandleCharacterActionEndEvent);
         }
 
         private void OnDisable()
         {
             // 注销玩家输入事件
-            EventBus.Channel(Channel.Gameplay).Unsubscribe<ActionEndEvent>(HandleCharacterActionEnd);
+            EventBus.Channel(Channel.Gameplay).Unsubscribe<ActionEndEvent>(HandleCharacterActionEndEvent);
             EventBus.Channel(Channel.Gameplay).Unsubscribe<StartTurnEvent>(HandleTurnStartEvent);
         }
-        
-        private StartTurnEvent _curTurnEvent;
         
         private void HandleTurnStartEvent(StartTurnEvent startTurnEvent)
         {
@@ -83,8 +77,8 @@ namespace GameLogic.ManualInput
             _curTurnEvent = startTurnEvent;
             
             // 处理玩家回合开始事件
-            var units = ServiceLocator.Resolve<IUnitManager>().GetEntities<CharacterUnitController>(EntityType.Character);
-            _playableCharacters = units.Where(unit => unit.CharacterRuntimeData.faction == canControlFaction).ToList();
+            _playableCharacters = ServiceLocator.Resolve<ICharacterManager>().GetEntities(canControlFaction);
+            // _playableCharacters = units.Where(unit => unit.CharacterRuntimeData.faction == canControlFaction).ToList();
 
             if (_playableCharacters.Count == 0)
             {
@@ -106,22 +100,27 @@ namespace GameLogic.ManualInput
         /// <summary>
         /// 响应角色行动结束事件，合适时机结束回合
         /// </summary>
-        public void HandleCharacterActionEnd(ActionEndEvent args)
+        private void HandleCharacterActionEndEvent(ActionEndEvent args)
+        {
+            OnCharacterAction(args.CharacterRTData);
+        }
+        
+        public void OnCharacterAction(CharacterBattleRuntimeData rtData)
         {
             // 处理角色行动结束事件
-            if (args.CharacterRTData.faction != canControlFaction) return;
+            if (rtData.faction != canControlFaction) return;
             var character = _playableCharacters.Find(c =>
-                c.CharacterRuntimeData == args.CharacterRTData);
+                c.CharacterRuntimeData == rtData);
             character.OnEndAction();
             _playableCharacters.Remove(character);
             
             OnCharacterActionEndConfirm?.Invoke();
             StackManager.PopAll();
             
-            $"[{args.CharacterRTData.ConfigData.name} action end, remain {_playableCharacters.Count} characters can Action".LogWithColor(Color.white);
+            $"[{rtData.ConfigData.name} action end, remain {_playableCharacters.Count} characters can Action".LogWithColor(Color.white);
             if (_playableCharacters.Count == 0)
             {
-                _curTurnEvent.Complete();
+                ReadyToComplete();
             }
             else
             {
@@ -135,7 +134,7 @@ namespace GameLogic.ManualInput
                 _viewCamera.ScreenToWorldPoint(Input.mousePosition), 
                 default, 
                 100f, 
-                groundLayer | entityLayer);
+                groundLayer );
             OnHandleRaycastInfo?.Invoke(hitInfo);
         }
 
@@ -171,7 +170,7 @@ namespace GameLogic.ManualInput
                 _viewCamera.ScreenToWorldPoint(Input.mousePosition), 
                 default, 
                 100f, 
-                groundLayer | entityLayer);
+                groundLayer);
             if (hitInfo.collider == null) 
             {
                 CurPointGrid = null;
@@ -179,28 +178,53 @@ namespace GameLogic.ManualInput
             }
             if (hitInfo.collider == null) return;
             var grid = hitInfo.collider.GetComponent<GridController>();
-            if (grid == null)
-            {
-                // 如果是实体，则通过实体获取到格子
-                var entity = hitInfo.collider.GetComponent<EntityController>();
-                grid = _gridManagerCache.GetGridController(entity.RuntimeData.gridCoord);
-            }
+            // if (grid == null)
+            // {
+            //     // 如果是实体，则通过实体获取到格子
+            //     var entity = hitInfo.collider.GetComponent<EntityController>();
+            //     grid = _gridManagerCache.GetGridController(entity.RuntimeData.gridCoord);
+            // }
             CurPointGrid = grid;
         }
         
         [SerializeField] private Animator ghostAnimator;
         
-        public void SetGhostSprite(RuntimeAnimatorController runtimeAnimator, Vector3Int gridCoord)
+        public void SetGhostSprite(Animator animator, Vector3Int gridCoord) 
         {
+            if (ghostAnimator == null || animator == null) 
+            {
+                Debug.LogError("Animator 未初始化！", this);
+                return;
+            }
+
+            // 重置动画状态
+            ghostAnimator.Rebind();
+            ghostAnimator.runtimeAnimatorController = animator.runtimeAnimatorController;
+            ghostAnimator.Update(0); // 立即应用第一帧
+
+            // 设置位置
             ghostAnimator.transform.position = CoordinateConverter.CoordToWorldPos(gridCoord);
             ghostAnimator.enabled = true;
-            ghostAnimator.runtimeAnimatorController = runtimeAnimator;
+        }
+
+        public void HideGhostAvatar() 
+        {
+            if (ghostAnimator == null) return;
+
+            ghostAnimator.runtimeAnimatorController = null;
+            ghostAnimator.enabled = false;
+        }
+
+        private void ReadyToComplete()
+        {
+            StartCoroutine(WaitForComplete());
         }
         
-        public void HideGhostAvatar()
+        private IEnumerator WaitForComplete()
         {
-            ghostAnimator.enabled = false;
-            ghostAnimator.runtimeAnimatorController = null;
+            yield return new WaitUntil(() => TimeLineManager.Instance.IsRunning == false);
+            // TODO 结束回合
+            _curTurnEvent.Complete();
         }
     }
 }

@@ -9,6 +9,7 @@ namespace MyFramework.Editor
             foreach (var go in gos) {
                 if (go != null) {
                     go.SetActive(!go.activeSelf);
+                    UnityEditor.EditorUtility.SetDirty(go);
                 }
             }
         }

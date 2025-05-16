@@ -1,6 +1,5 @@
 // 增强版运行时数据类
 
-using System.Collections.Generic;
 using GameLogic.Unit.Controller;
 using MyFramework.Utilities;
 using UnityEngine;
@@ -18,6 +17,17 @@ namespace GameLogic.Grid
             _cellID = cellID;
             GridCoord = new Bindable<Vector3Int>(gridCoord);
         }
-        public StaticGridData ConfigData => GridConfigManager.Instance.GetConfig(_cellID);
+
+        private GridDataConfig _dataConfig;
+
+        public GridDataConfig ConfigDataConfig
+        {
+            get
+            {
+                if (_dataConfig != null) return _dataConfig;
+                _dataConfig = GridConfigManager.Instance.GetConfig(_cellID);
+                return _dataConfig;
+            }
+        }
     }
 }

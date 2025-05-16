@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using GameLogic.Battle;
 using GameLogic.Unit;
 using GameLogic.Unit.Controller;
 using MyFramework.Utilities.Singleton;
@@ -21,7 +20,7 @@ namespace GameLogic.BUFF
         public Dictionary<string, BuffTriggerSet> LocalBuffs { get; } = new();
     }
 
-    public class BuffSystem : Singleton<BuffSystem>
+    public class BuffSystem : SceneSingleton<BuffSystem>
     {
         private readonly Dictionary<Faction, FactionBuffs> _factionBuffs = new()
         {
@@ -44,6 +43,15 @@ namespace GameLogic.BUFF
         public IEnumerator TriggerBuff(QueryBuffTriggerContext context)
         {
             yield return null;
+        }
+        
+        public void ClearBuffs()
+        {
+            foreach (var factionBuffs in _factionBuffs.Values)
+            {
+                factionBuffs.FactionBuffTriggers.Clear();
+                factionBuffs.LocalBuffs.Clear();
+            }
         }
     }
 }

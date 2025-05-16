@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using System.IO;
+using GameLogic.Skill;
 using GameLogic.Unit;
-using UnityEngine;
 
 namespace SaveSystem
 {
@@ -13,26 +12,34 @@ namespace SaveSystem
             // 1. Elaina
             var elaina = new CharacterData
             {
-                characterID = "Elaina",
-                level = 2,
-                activeSkillsData = new List<SkillData>()
+                characterID = CharacterID.Elaina,
+                level = 1,
+                skillsData = new List<SkillData>()
                 {
-                    new() { skillID = "FireVolt", level = 1 },
+                    new(SkillID.ElainaDefaultAttack, 1),
+                    // new(SkillID.ElainaFireVolt, 1),
+                    // new(SkillID.ElainaPassive, 1),
                 },
-                passiveSkillsData = new List<SkillData>()
-                {
-                    new() { skillID = "FoxPlan", level = 1 },
-                }
+                // passiveSkillsData = new List<SkillData>()
+                // {
+                //     // new(SkillID.ElainaPassive, 1),
+                // }
             };
             // 2. Ais
             var ais = new CharacterData
             {
-                characterID = "Ais",
+                characterID = CharacterID.Ais,
                 level = 1,
-                activeSkillsData = new List<SkillData>()
+                skillsData = new List<SkillData>()
                 {
-                    new() { skillID = "DeltaSlash", level = 1 },
-                }
+                    new(SkillID.AisDefaultAttack, 1),
+                    // new(SkillID.AisDeltaSlash, 1),
+                    // new(SkillID.AisPassive, 1),
+                },
+                // passiveSkillsData = new List<SkillData>()
+                // {
+                //     new(SkillID.AisPassive, 1),
+                // }
             };
 
             return new SaveData()
@@ -42,12 +49,10 @@ namespace SaveSystem
                     elaina,
                     ais,
                 },
-                resources = 400,
+                resources = 120,
                 
                 levelPassedData = new List<LevelProgressData>()
                 {
-                    new LevelProgressData("1-1", 3),
-                    new LevelProgressData("1-2", 1),
                 }
             };
         }

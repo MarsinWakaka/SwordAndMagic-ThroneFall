@@ -15,7 +15,6 @@ MonoBehaviour:
   characterData:
     characterID: Goblin
     level: 1
-    activeSkillsData:
-    - skillID: ClubAttack
+    skillsData:
+    - skillID: Goblin_DefaultAttack
       level: 1
-    passiveSkillsData: []

@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using GameLogic.Skill.Active;
-using GameLogic.Skill.Passive;
 using UnityEngine;
 
 namespace GameLogic.Unit.ConfigData
@@ -22,7 +20,6 @@ namespace GameLogic.Unit.ConfigData
     [CreateAssetMenu(menuName = "Unit/CharacterData")]
     public class CharacterConfigData : EntityConfigData
     {
-
         [Header("人物升级数据")] 
         [SerializeField] private List<CharacterProperty> upgradeData;
         
@@ -37,15 +34,12 @@ namespace GameLogic.Unit.ConfigData
             }
             return upgradeData[level - 1];
         }
+     
+        // TODO 有被修改的风险，需要配置管理器做好放修改措施，也要防止频繁的创建销毁
         
-        // /// <summary>
-        // /// 主动技能
-        // /// </summary> 
-        // public List<ActiveSkillConfig> activeSkills;
-        //
-        // /// <summary>
-        // /// 被动技能
-        // /// </summary>
-        // public List<PassiveSkillConfig> passiveSkills;
+        /// <summary>
+        /// 技能ID列表
+        /// </summary> 
+        public List<string> skillIDs;
     }
 }

@@ -74,8 +74,8 @@ namespace Player
         {
             if (PlayerRuntimeData.OwnedCharacters.TryGetValue(characterID, out var characterData))
             {
-                var skill = characterData.activeSkillsData.FirstOrDefault(s => s.skillID == skillID);
-                if (skill.skillID != null)
+                var skill = characterData.skillsData.FirstOrDefault(s => s.skillID == skillID);
+                if (skill != null)
                 {
                     return skill.level;
                 }
@@ -87,6 +87,42 @@ namespace Player
         public List<CharacterData> GetAllOwnedCharacters()
         {
             return PlayerRuntimeData.OwnedCharacters.Values.ToList();
+        }
+
+        /// <summary>
+        /// 验证角色是否拥有
+        /// </summary>
+        /// <param name="characterID"></param>
+        /// <param name="skillData"></param>
+        public bool TryUnlockSkill(string characterID, ref SkillData skillData)
+        {
+            if (PlayerRuntimeData.OwnedCharacters.TryGetValue(characterID, out var characterData))
+            {
+                var skillID = skillData.skillID;
+                var hasUnlocked = characterData.skillsData.FindIndex(s => s.skillID == skillID) != -1;
+                if (hasUnlocked)
+                {
+                    Debug.LogError($"Skill {skillID} already unlocked for character {characterID}.");
+                    return false;
+                }
+                // 查看资源是否足够
+                Debug.Log($"Unlocking skill {skillID} for character {characterID}.");
+                var skillConfig = SkillConfigManager.Instance.GetConfig(skillID);
+                var unlockCost = skillConfig.GetUpgradeCost(0);
+                if (PlayerRuntimeData.Resources < unlockCost)
+                {
+                    Debug.Log($"Not enough resources to unlock skill {skillID}. Required: {unlockCost}, Available: {PlayerRuntimeData.Resources}");
+                    return false;
+                }
+                // 扣除资源
+                PlayerRuntimeData.Resources -= unlockCost;
+                characterData.skillsData.Add(new SkillData(skillID, 1));
+                skillData.level = 1;
+                Debug.Log($"Skill {skillID} unlocked for character {characterID}. Remaining resources: {PlayerRuntimeData.Resources}");
+                
+                return true;
+            }
+            return false;
         }
 
         public int GetPlayerResources()

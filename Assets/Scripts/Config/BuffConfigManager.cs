@@ -6,12 +6,12 @@ namespace Config
 {
     public static class BuffConfigManager
     {
-        private static readonly SimpleConfigManager<Buff> ConfigManager = new(LoadConfig);
+        private static readonly SimpleConfigManager<BuffConfig> ConfigManager = new(LoadConfig);
 
-        private static Buff LoadConfig(string configId)
+        private static BuffConfig LoadConfig(string configId)
         {
             var fullPath = $"Buffs/{configId}";
-            var buff = Resources.Load<Buff>(fullPath);
+            var buff = Resources.Load<BuffConfig>(fullPath);
             if (buff == null)
             {
                 Debug.LogError($"未找到配置: {configId} at {fullPath}");
@@ -20,7 +20,7 @@ namespace Config
             return buff;
         }
 
-        public static Buff GetConfig(string configId) => ConfigManager.GetConfig(configId);
+        public static BuffConfig GetConfig(string configId) => ConfigManager.GetConfig(configId);
         
         // private static Dictionary<string, Buff> _configCache;
         // public static T GetConfig<T>(string configID) where T : Buff

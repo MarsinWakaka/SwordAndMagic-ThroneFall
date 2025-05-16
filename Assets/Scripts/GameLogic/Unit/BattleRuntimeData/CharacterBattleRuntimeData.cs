@@ -16,19 +16,36 @@ namespace GameLogic.Unit.BattleRuntimeData
     [Serializable]
     public class CharacterBattleRuntimeData : EntityBattleRuntimeData
     {
+        // TODO 进一步继续封装
         // 角色属性
         public Bindable<int> MaxHp;
         public Bindable<int> MaxMoveRange;
         public const int MaxSkillPoint = 6;
         public Bindable<int> CurHp;
         public Bindable<int> CurMoveRange;
-        public Bindable<int> CurSkillPoint;
+        private Bindable<int> _curSkillPoint;
         // 技能
         public List<ActiveSkillInstance> ActiveSkills;
         public List<PassiveSkillInstance> PassiveSkills;
         // 角色状态
         public Bindable<bool> CanAction;
         public BuffManager BuffManager;
+        
+        public void AddListenerOnSkillPoint(Action<int> action)
+        {
+            _curSkillPoint.AddListener(action);
+        }
+        
+        public void RemoveListenerOnSkillPoint(Action<int> action)
+        {
+            _curSkillPoint.RemoveListener(action);
+        }
+        
+        public int CurSkillPoint
+        {
+            get => _curSkillPoint.Value;
+            set => _curSkillPoint.Value = Mathf.Clamp(value, 0, MaxSkillPoint);
+        }
 
         public override EntityConfigData ConfigData => CharacterConfigData;
         public CharacterConfigData CharacterConfigData => CharacterConfigManager.Instance.GetConfig(EntityID);
@@ -43,25 +60,37 @@ namespace GameLogic.Unit.BattleRuntimeData
             MaxMoveRange = new Bindable<int>(characterProperty.maxMoveRange);
             CurHp = new Bindable<int>(characterProperty.maxHp);
             CurMoveRange = new Bindable<int>(characterProperty.maxMoveRange);
-            CurSkillPoint = new Bindable<int>(characterProperty.initSkillPoint);
+            _curSkillPoint = new Bindable<int>(characterProperty.initSkillPoint);
             
             CanAction = new Bindable<bool>(true);
             
             // 主动技能初始化
             ActiveSkills = new List<ActiveSkillInstance>();
-            foreach (var activeSkillData in characterData.activeSkillsData)
-            {
-                var skillInstance = ActiveSkillConfigManager.Instance.GetConfig(activeSkillData.skillID)
-                    .CreateActiveSkillInstance(activeSkillData.level);
-                ActiveSkills.Add(skillInstance);
-            }
-            // 被动技能初始化
             PassiveSkills = new List<PassiveSkillInstance>();
-            foreach (var passiveSkillData in characterData.passiveSkillsData)
+            foreach (var skillData in characterData.skillsData)
             {
-                var skillInstance = PassiveSkillConfigManager.Instance.GetConfig(passiveSkillData.skillID)
-                    .CreatePassiveSkillInstance(passiveSkillData.level);
-                PassiveSkills.Add(skillInstance);
+                // var skillInstance = ActiveSkillConfigManager.Instance.GetConfig(activeSkillData.skillID)
+                //     .CreateActiveSkillInstance(activeSkillData.level);
+                // ActiveSkills.Add(skillInstance);                
+                var skillConfig = SkillConfigManager.Instance.GetConfig(skillData.skillID);
+                switch (skillConfig)
+                {
+                    case PassiveSkillConfig psc:
+                    {
+                        var skillInstance = psc.CreatePassiveSkillInstance(skillData.level);
+                        PassiveSkills.Add(skillInstance);
+                        break;
+                    }
+                    case ActiveSkillConfig asc:
+                    {
+                        var skillInstance = asc.CreateActiveSkillInstance(skillData.level);
+                        ActiveSkills.Add(skillInstance);
+                        break;
+                    }
+                    default:
+                        Debug.LogError($"Unknown skill config type: {skillConfig.GetType()}");
+                        break;
+                }
             }
         }
         
@@ -70,11 +99,11 @@ namespace GameLogic.Unit.BattleRuntimeData
             BuffManager = new BuffManager(owner);
             foreach (var skill in ActiveSkills)
             {
-                skill.TakeEffect(owner);
+                skill.Initialize(owner);
             }
             foreach (var skill in PassiveSkills)
             {
-                skill.TakeEffect(owner);
+                skill.Initialize(owner);
             }
         }
 
@@ -89,26 +118,7 @@ namespace GameLogic.Unit.BattleRuntimeData
                    $"\nMaxMoveRange: {MaxMoveRange.Value}" +
                    $"\n, CurHp: {CurHp.Value}" +
                    $"\nCurMoveRange: {CurMoveRange.Value}" +
-                   $"\nCurSkillPoint: {CurSkillPoint.Value}";
+                   $"\nCurSkillPoint: {CurSkillPoint}";
         }
-        
-/*        
-        public CharacterRuntimeData(string instanceID, string entityID, Faction faction, Vector2Int gridCoord, Direction dir)
-            : base(instanceID, entityID, faction, dir, gridCoord)
-        {
-            var configData = CharacterConfigData;
-            var level = PlayerDataManager.Instance.GetPlayerLevel(EntityID);
-            var characterData = configData.GetCharacterData(level);
-            
-            // 属性初始化
-            MaxHp = new Bindable<int>(characterData.maxHp);
-            MaxMoveRange = new Bindable<int>(characterData.maxMoveRange);
-            CurHp = new Bindable<int>(characterData.maxHp);
-            CurMoveRange = new Bindable<int>(characterData.maxMoveRange);
-            CurSkillPoint = new Bindable<int>(characterData.initSkillPoint);
-            
-            CanAction = new Bindable<bool>(true);
-        }
-*/
     }
 }

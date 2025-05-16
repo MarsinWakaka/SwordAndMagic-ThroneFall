@@ -7,9 +7,6 @@ using GameLogic.Grid;
 using GameLogic.Skill.Active;
 using GameLogic.TimeLine;
 using GameLogic.Unit;
-using GameLogic.Unit.ConfigData;
-using GameLogic.Unit.Controller;
-using MyFramework.Algorithm;
 using MyFramework.Utilities;
 using MyFramework.Utilities.Extensions;
 using UnityEngine;
@@ -18,8 +15,7 @@ namespace GameLogic.AI
 {
     public class AIController : MonoBehaviour
     {
-        // private List<CharacterUnitController> _playableCharacters;
-        public Faction canControlFaction = Faction.Enemy;
+        [SerializeField] private Faction canControlFaction;
         
         private StartTurnEvent _startTurnEvent;
         
@@ -48,24 +44,9 @@ namespace GameLogic.AI
             // 获取所有决策信息
             
             // 处理玩家回合开始事件
-            var units = ServiceLocator.Resolve<IUnitManager>()
-                .GetEntities<CharacterUnitController>(EntityType.Character);
-            List<CharacterUnitController> playableCharacters = new();
-            List<CharacterUnitController> hostileCharacters = new();
+            var playableCharacters = ServiceLocator.Resolve<ICharacterManager>().GetEntities(canControlFaction);
+            var hostileCharacters = ServiceLocator.Resolve<ICharacterManager>().GetEntities(canControlFaction.Opposite());
             // TODO 制作行动区域，热力图
-            
-            foreach (var unit in units)
-            {
-                if (unit.IsDead) continue;
-                if (unit.CharacterRuntimeData.faction == canControlFaction)
-                {
-                    playableCharacters.Add(unit);
-                }
-                else
-                {
-                    hostileCharacters.Add(unit);
-                }
-            }
             
             if (playableCharacters.Count == 0)
             {
@@ -84,47 +65,70 @@ namespace GameLogic.AI
             foreach (var caster in playableCharacters)
             {
                 var casterRtData = caster.CharacterRuntimeData;
+                var casterCoord = caster.Coordinate();
                 // TODO 基于效益函数进行决策
                 // 遍历所有可用技能，根据优先级排序
                 var canUseSKill = caster.CharacterRuntimeData.ActiveSkills
                     .Where(skill => ActiveSkillUtil.CanUseSkill(skill, caster.CharacterRuntimeData))
-                    .OrderByDescending(skill => skill.ActiveConfig.priority);
+                    .OrderByDescending(skill => skill.ActiveConfig.priority).ToList();
                 
                 var hasMadeDecision = false;
-                var moveableArea = gridManager.GetAllMoveableArea(casterRtData.gridCoord, casterRtData.CurMoveRange.Value);
+                // var moveableArea = gridManager.CalculateAllMoveablePath(casterRtData.gridCoord, casterRtData.CurMoveRange.Value);
+                // // 获取坐标与移动节点的字典
+                // var lookUpDict = new Dictionary<Vector2Int, PathTreeNode>(moveableArea.Count);
+                // foreach (var node in moveableArea)
+                // {
+                //     lookUpDict[node.Coord] = node;
+                // }
+                
+                // 根据角色的距离排序
+                var hostiles = hostileCharacters
+                    .OrderBy(target => casterCoord.ManhattanDistance(target.Coordinate()))
+                    .ToList();
+                
                 foreach (var skill in canUseSKill)
                 {
                     if (hasMadeDecision) break;
                     switch (skill.ActiveConfig.canImpactTarget)
                     {
                         case SkillCanImpactTarget.Enemy:
-                            // 根据角色的距离排序
-                            var targets = hostileCharacters
-                                .OrderBy(target => caster.GetCoordinate().ManhattanDistance(target.GetCoordinate()));
                             
                             // 就近选择目标
-                            foreach (var target in targets )
+                            foreach (var target in hostiles )
                             {
                                 if (target.IsDead) continue;
                                 
                                 // 判断目标可达？
+                                var targetCoord = target.Coordinate();
+                                
                                 if (caster.CharacterRuntimeData.CurMoveRange.Value + skill.GetAttackRange().y 
-                                    < target.GetCoordinate().ManhattanDistance(caster.GetCoordinate()))
-                                {
-                                    continue;
-                                }
-
-                                if (!AttackUtil.TryCalculateAttackPosition(
-                                    moveableArea,
-                                    skill.ActiveConfig,
-                                    target.GetCoordinate(),
-                                    out var attackPosition))
+                                    < casterCoord.ManhattanDistance(targetCoord))
                                 {
                                     continue;
                                 }
                                 
-                                // 移动到攻击位置
-                                caster.Teleport(attackPosition);
+                                // if (!AttackUtil.TryCalculateAttackPosition(
+                                //         moveableArea,
+                                //         skill.ActiveConfig,
+                                //         target.Coordinate(),
+                                //         out var attackPosition))
+                                // {
+                                //     continue;
+                                // }
+                                // var path = lookUpDict[attackPosition].ToPathWayList();
+                                
+                                var path = gridManager.TryFindPathToCloseTarget(casterCoord, targetCoord,
+                                    skill.GetAttackRange().y);
+                                if (path == null) continue; // 不可达
+                                // 如果距离过远，则跳过
+                                if (path.Count > casterRtData.CurMoveRange.Value) continue;
+
+                                if (path.Count > 0)
+                                {
+                                    // 移动到攻击位置
+                                    TimeLineManager.Instance.AddPerform(new MoveWrapper(caster, path));
+                                    yield return new WaitUntil(() => !TimeLineManager.Instance.IsRunning);
+                                }
                                 
                                 // 选择目标
                                 var grid = gridManager.GetGridController(target.CharacterRuntimeData.gridCoord);
@@ -144,11 +148,63 @@ namespace GameLogic.AI
                     }
                 }
 
+                // 如果没有决策，则进行默认决策：靠近敌人
                 if (!hasMadeDecision)
                 {
-                    // 则找到最近的敌人，移动到敌人身边
+                    Debug.Log($"[{caster.FriendlyInstanceID()}] 没有决策，进行默认决策");
+                    // 当前最短距离的中间节点个数(也就是不包含起始点和结束点的个数)
+                    int minDist = int.MaxValue;
+                    List<Vector2Int> minPathList = null;
                     
+                    // TODO 改善算法，找到真正最近的敌人，移动到敌人身边; 例如可以对每个对象使用A*求出最短的那个
+                    // 计算当前决策者到所有敌人的最大预估距离(也就是曼哈顿距离)，如果预估距离大于当前最小路径，则不进行进行寻路，跳出循环
+                    foreach (var hostile in hostiles)
+                    {
+                        if (hostile.IsDead) continue;
+                        var intervalDist = caster.Coordinate().ManhattanDistance(hostile.Coordinate()) - 1;
+                        if (intervalDist > minDist) break;
+                        // 计算路径，尝试到目标旁边一格距离。
+                        var path = gridManager.TryFindPathToCloseTarget(caster.Coordinate(), hostile.Coordinate(), 1);
+                        
+                        if (path == null) continue;
+                        if (path.Count == 0)
+                        {
+                            Debug.Log($"[{caster.FriendlyInstanceID()}] 无需移动");
+                            break;
+                        }
+                        
+#if GRID_DEBUG
+                        // 打印路径
+                        var stringBuilder = new System.Text.StringBuilder();
+                        stringBuilder.Append(casterCoord);
+                        foreach (var node in path)
+                        {
+                            stringBuilder.Append($" -> {node}");
+                        }
+                        stringBuilder.Append($"[{path.Count}]");
+                        Debug.Log($"[{caster.FriendlyInstanceID()} 路径个数为7: {stringBuilder}");
+#endif
+                        if (path.Count < minDist)
+                        {
+                            minDist = path.Count;
+                            minPathList = path;
+                            Debug.Log($"[{caster.FriendlyInstanceID()}] 找到新的最短路径: {minPathList.Count}");
+                        }
+                    }
+
+                    if (minPathList == null)
+                    {
+                        Debug.Log($"[{caster.FriendlyInstanceID()}] 没有可移动的路径");
+                        continue;
+                    }
+
+                    if (minPathList.Count > casterRtData.CurMoveRange.Value)
+                        minPathList = minPathList.GetRange(0, casterRtData.CurMoveRange.Value);
+                    TimeLineManager.Instance.AddPerform(new MoveWrapper(caster, minPathList));
                 }
+                
+                // 等待动作队列结束
+                yield return new WaitUntil(() => !TimeLineManager.Instance.IsRunning);
             }
             
             foreach (var character in playableCharacters)

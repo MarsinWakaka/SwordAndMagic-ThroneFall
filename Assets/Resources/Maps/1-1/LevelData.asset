@@ -17,15 +17,15 @@ MonoBehaviour:
   hasDialogue: 1
   dialogueId: 1-1
   grids:
-  - cellID: 1
+  - cellID: 3
     gridCoord: {x: 0, y: 0}
     height: 0
-  - cellID: 1
+  - cellID: 3
     gridCoord: {x: 0, y: 1}
-    height: 1
+    height: 0
   - cellID: 1
     gridCoord: {x: 0, y: 2}
-    height: 2
+    height: 0
   - cellID: 1
     gridCoord: {x: 0, y: 3}
     height: 0
@@ -34,11 +34,11 @@ MonoBehaviour:
     height: 0
   - cellID: 1
     gridCoord: {x: 0, y: 5}
-    height: 0
-  - cellID: 1
+    height: 1
+  - cellID: 3
     gridCoord: {x: 1, y: 0}
     height: 0
-  - cellID: 1
+  - cellID: 3
     gridCoord: {x: 1, y: 1}
     height: 0
   - cellID: 1
@@ -52,17 +52,17 @@ MonoBehaviour:
     height: 0
   - cellID: 1
     gridCoord: {x: 1, y: 5}
-    height: 0
-  - cellID: 1
+    height: 1
+  - cellID: 3
     gridCoord: {x: 2, y: 0}
     height: 0
-  - cellID: 1
+  - cellID: 3
     gridCoord: {x: 2, y: 1}
     height: 0
-  - cellID: 1
+  - cellID: 2
     gridCoord: {x: 2, y: 2}
     height: 0
-  - cellID: 1
+  - cellID: 2
     gridCoord: {x: 2, y: 3}
     height: 0
   - cellID: 1
@@ -70,15 +70,14 @@ MonoBehaviour:
     height: 0
   - cellID: 1
     gridCoord: {x: 2, y: 5}
-    height: 0
+    height: 1
+  maxDeployCount: 2
   deployableGrids:
   - {x: 0, y: 0}
   - {x: 1, y: 0}
   - {x: 2, y: 0}
-  maxDeployCount: 2
   allowPlayerCharacters: 1
-  presetCharacters:
-  - {fileID: 11400000, guid: ad0c3eaea47b4574cb81ae9ef735ddf0, type: 2}
+  presetCharacters: []
   characterSpawnData:
   - faction: 0
     spawnQueue: []
@@ -91,4 +90,4 @@ MonoBehaviour:
       gridCoord: {x: 1, y: 5}
       direction: 0
   tasks: []
-  reward: 150
+  reward: 60

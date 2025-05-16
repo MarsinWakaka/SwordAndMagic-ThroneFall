@@ -1,7 +1,6 @@
 using GameLogic.Unit.ConfigData;
 using MyFramework.Utilities.Singleton;
 using UnityEngine;
-using Utilities;
 
 namespace Config
 {
@@ -16,7 +15,7 @@ namespace Config
 
         private static CharacterConfigData LoadConfig(string configId)
         {
-            return Resources.Load<CharacterConfigData>($"Characters/{configId}/ConfigData");
+            return Resources.Load<CharacterConfigData>($"Characters/ConfigData/{configId}");
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine.Serialization;
 
 namespace GameLogic.Unit
 {
@@ -8,10 +9,16 @@ namespace GameLogic.Unit
     /// 定义一个角色所需的所有信息
     /// </summary>
     [Serializable]
-    public struct SkillData
+    public class SkillData
     {
         public string skillID;
         public int level;
+        
+        public SkillData(string skillID, int level)
+        {
+            this.skillID = skillID;
+            this.level = level;
+        }
     }
     
     /// <summary>
@@ -27,11 +34,19 @@ namespace GameLogic.Unit
         // 角色等级
         public int level;
         
-        // 主动技能等级
-        public List<SkillData> activeSkillsData = new();
-        // 被动技能等级
-        public List<SkillData> passiveSkillsData = new();
+        // 技能等级
+        public List<SkillData> skillsData = new();
         
         // 装备数据等等...
+        
+        public Dictionary<string, int> GetSkillLevelMap()
+        {
+            var skillLevel = new Dictionary<string, int>();
+            foreach (var skill in skillsData)
+            {
+                skillLevel[skill.skillID] = skill.level;
+            }
+            return skillLevel;
+        }
     }
 }

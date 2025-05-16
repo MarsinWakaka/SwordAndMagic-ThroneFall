@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Events.Global;
 using GameLogic.Unit;
 using MyFramework.Utilities;
+using Player;
 using SoundSystem;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,6 +21,9 @@ namespace UI.ConcretePanel
 
         [SerializeField] private CharacterRosterSlot rosterSlotPrefab;
         [SerializeField] private Transform rosterSlotParent;
+        
+        [SerializeField] private Text goldText;
+        
         private readonly List<CharacterRosterSlot> _activeRosterSlots = new();
         
         private void Awake()
@@ -37,6 +41,11 @@ namespace UI.ConcretePanel
         }
         
         private CharacterData _currentCharacter;
+        
+        private void OnGoldTextUpdate(int gold)
+        {
+            goldText.text = gold.ToString();
+        }
 
         public override void OnCreate(object data)
         {
@@ -65,6 +74,7 @@ namespace UI.ConcretePanel
             }
             
             RegisterEvent();
+            OnGoldTextUpdate(PlayerDataManager.Instance.GetPlayerResources());
         }
         
         
@@ -80,11 +90,13 @@ namespace UI.ConcretePanel
         // 监听角色数据更新事件
         private void RegisterEvent()
         {
+            PlayerDataManager.Instance.AddListerOnResourcesChanged(OnGoldTextUpdate);
             EventBus.Channel(Channel.Global).Subscribe<CharacterUpgradeSuccessEvent>(HandleCharacterUpgradeSuccess);
         }
         
         private void UnregisterEvent()
         {
+            PlayerDataManager.Instance.RemoveListerOnResourcesChanged(OnGoldTextUpdate);
             EventBus.Channel(Channel.Global).Unsubscribe<CharacterUpgradeSuccessEvent>(HandleCharacterUpgradeSuccess);
         }
         

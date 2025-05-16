@@ -5,10 +5,17 @@ using MyFramework.Utilities.Singleton;
 
 namespace GameLogic.TimeLine
 {
+    public interface IPerform
+    {
+        IEnumerator Perform();
+    }
+    
     // TODO ： 修改为场景单例
     public class TimeLineManager : SceneSingleton<TimeLineManager>
     {
         private readonly Queue<Func<IEnumerator>> _timeline = new();
+        
+        public bool IsRunning => _timeline.Count > 0;
 
         protected override void OnAwake()
         {
@@ -24,6 +31,11 @@ namespace GameLogic.TimeLine
         {
             _timeline.Enqueue(perform);
         }
+        
+        public void AddPerform(IPerform perform)
+        {
+            _timeline.Enqueue(perform.Perform);
+        }
 
         private IEnumerator Execute()
         {
@@ -31,8 +43,9 @@ namespace GameLogic.TimeLine
             {
                 if (_timeline.Count > 0)
                 {
-                    var timeLineEvent = _timeline.Dequeue();
+                    var timeLineEvent = _timeline.Peek();
                     yield return timeLineEvent();
+                    _timeline.Dequeue();
                 }
                 else
                 {
